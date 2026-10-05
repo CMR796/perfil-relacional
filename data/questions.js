@@ -218,9 +218,9 @@ export const QUESTIONS = [
     text: "Actúo con decisión incluso cuando hay incertidumbre.",
     style: "fuego",
     weight: 1
-  }
+  },
 
-];
+
 
 {
   id: 31,
@@ -429,4 +429,5 @@ export const QUESTIONS = [
   text: "Me resulta fácil inspirar a otras personas.",
   style: "aire",
   weight: 1
-}
+},
+  ];
