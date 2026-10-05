@@ -3,418 +3,437 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Conecta360 | Informe Personal</title>
-
-https://cdn.jsdelivr.net/npm/chart.jsscript>
-
-<style>
-
-:root{
-  --primary:#2962ff;
-  --secondary:#4caf50;
-  --bg:#f5f7fb;
-  --card:#ffffff;
-  --text:#1f2937;
-}
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Inter,Arial,sans-serif;
-}
-
-body{
-  background:var(--bg);
-  color:var(--text);
-}
-
-.container{
-  width:min(1200px,92%);
-  margin:30px auto;
-}
-
-.card{
-  background:white;
-  border-radius:20px;
-  padding:30px;
-  margin-bottom:25px;
-  box-shadow:0 3px 12px rgba(0,0,0,.08);
-}
-
-.hero{
-  background:linear-gradient(
-      135deg,
-      #2962ff,
-      #4b89ff
-  );
-
-  color:white;
-  border-radius:20px;
-  padding:40px;
-  margin-bottom:25px;
-}
-
-.hero h1{
-  margin-bottom:10px;
-}
-
-.hero p{
-  opacity:.95;
-}
-
-.section-title{
-  color:#2962ff;
-  margin-bottom:20px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:
-      repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
-}
-
-.stat{
-  background:#f7f9ff;
-  border-radius:15px;
-  padding:20px;
-}
-
-.stat-value{
-  font-size:2rem;
-  font-weight:bold;
-  color:#2962ff;
-}
-
-.chart-container{
-  position:relative;
-  height:400px;
-}
-
-ul{
-  padding-left:20px;
-}
-
-li{
-  margin-bottom:8px;
-}
-
-.actions{
-  display:flex;
-  gap:15px;
-  flex-wrap:wrap;
-}
+  <meta charset="UTF-8">
 
-button{
-  border:none;
-  padding:14px 20px;
-  border-radius:12px;
-  cursor:pointer;
-  font-weight:600;
-}
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
-.primary{
-  background:#2962ff;
-  color:white;
-}
+  <title>
+    Informe de Perfil Relacional
+  </title>
 
-.secondary{
-  background:#4caf50;
-  color:white;
-}
+  <link
+    rel="stylesheet"
+    href="../styles/main.css">
 
-.back{
-  background:#e5e7eb;
-}
+<">
 
-.summary{
-  font-size:1.1rem;
-  line-height:1.7;
-}
+    <header class="report-header">
 
-.profile-tag{
-  display:inline-block;
-  background:#2962ff;
-  color:white;
-  padding:8px 16px;
-  border-radius:999px;
-  margin-top:10px;
-}
-
-@media(max-width:768px){
+      <h1>
+        Informe de Perfil Relacional
+      </h1>
 
-  .chart-container{
-    height:300px;
-  }
+      <p id="userName">
+        Participante
+      </p>
 
-}
+    </header>
 
-</style>
+    <section class="card">
 
-</head>
+      <h2>
+        Perfil Predominante
+      </h2>
 
-<body>
+      <div
+        id="dominantProfileCard">
 
-<div class="container">
+      </div>
 
-<div class="hero">
+    </section>
 
-<h1>Conecta360</h1>
+    <section class="card">
 
-<p>
-Informe de Comunicación y Relaciones Interpersonales
-</p>
+      <h2>
+        Resumen Ejecutivo
+      </h2>
 
-<div
-  id="profileTag"
-  class="profile-tag"
->
-Perfil
-</div>
+      <h3 id="profileTitle">
+      </h3>
 
-</div>
+      <p id="profileSummary">
+      </p>
 
-<div class="card">
+    </section>
 
-<h2 class="section-title">
-Participante
-</h2>
+    <section class="card">
 
-<div id="participantData"></div>
+      <h2>
+        Resultado del Perfil
+      </h2>
 
-</div>
+      <div class="profile-grid">
 
-<div class="card">
+        <div>
 
-<h2 class="section-title">
-Resumen Ejecutivo
-</h2>
+          <strong>
+            Tipo de perfil
+          </strong>
 
-<div
-  id="executiveSummary"
-  class="summary"
-></div>
+          <p id="profileType">
+          </p>
 
-</div>
+        </div>
 
-<div class="card">
+        <div>
 
-<h2 class="section-title">
-Resultados
-</h2>
+          <strong>
+            Estilos dominantes
+          </strong>
 
-<div class="grid">
+          <p id="dominantStyles">
+          </p>
 
-<div class="stat">
-<div class="stat-value"
-     id="directivoScore">
-0%
-</div>
-<div>Directivo</div>
-</div>
+        </div>
 
-<div class="stat">
-<div class="stat-value"
-     id="analiticoScore">
-0%
-</div>
-<div>Analítico</div>
-</div>
+        <div>
 
-<div class="stat">
-<div class="stat-value"
-     id="relacionalScore">
-0%
-</div>
-<div>Relacional</div>
-</div>
+          <strong>
+            Estilo menos utilizado
+          </strong>
 
-<div class="stat">
-<div class="stat-value"
-     id="facilitadorScore">
-0%
-</div>
-<div>Facilitador</div>
-</div>
+          <p id="weakestStyle">
+          </p>
 
-</div>
+        </div>
 
-</div>
+        <div>
 
-<div class="card">
+          <strong>
+            Intensidad
+          </strong>
 
-<h2 class="section-title">
-Gráfico de Barras
-</h2>
+          <p id="intensity">
+          </p>
 
-<div class="chart-container">
-<canvas id="barChart"></canvas>
-</div>
+        </div>
 
-</div>
+      </div>
 
-<div class="card">
+    </section>
 
-<h2 class="section-title">
-Mapa de Estilos
-</h2>
+    <section class="card">
 
-<div class="chart-container">
-<canvas id="radarChart"></canvas>
-</div>
+      <h2>
+        Distribución de estilos
+      </h2>
 
-</div>
+      <div id="percentages">
+      </div>
 
-<div class="card">
+    </section>
 
-<h2 class="section-title">
-Fortalezas
-</h2>
+    <section class="card">
 
-<ul id="strengthsList"></ul>
+      <h2>
+        Mapa de estilos
+      </h2>
 
-</div>
+      <div id="styleMap">
+      </div>
 
-<div class="card">
+    </section>
 
-<h2 class="section-title">
-Áreas de Mejora
-</h2>
+    <section class="card">
 
-<ul id="risksList"></ul>
+      <h2>
+        Fortalezas principales
+      </h2>
 
-</div>
+      <ul id="strengths">
+      </ul>
 
-<div class="card">
+    </section>
 
-<h2 class="section-title">
-Recomendaciones
-</h2>
+    <section class="card">
 
-<ul id="recommendationsList"></ul>
+      <h2>
+        Riesgos potenciales
+      </h2>
 
-</div>
+      <ul id="risks">
+      </ul>
 
-<div class="card">
+    </section>
 
-<h2 class="section-title">
-Comunicación Efectiva
-</h2>
+    <section class="card action-panel">
 
-<p id="communicationGuide"></p>
+      <button id="backBtn">
 
-</div>
+        Volver al cuestionario
 
-<div class="card">
+      </button>
 
-<div class="actions">
+      <button id="compareBtn">
 
-<button
-  class="primary"
-  id="downloadPdfBtn"
->
-Descargar PDF
-</button>
+        Comparar perfiles
 
-<button
-  class="secondary"
-  onclick="window.location.href='questionnaire.html'"
->
-Nuevo Cuestionario
-</button>
+      </button>
 
-<button
-  class="back"
-  onclick="window.location.href='admin.html'"
->
-Administración
-</button>
+    </section>
 
-</div>
+  </div>
 
-</div>
+  <script type="module">
 
-</div>
+    import {
+      evaluateProfile
+    }
+    from "../services/scoringEngine.js";
 
-<script type="module">
+    import {
+      renderPercentages
+    }
+    from "../ui/charts.js";
 
-import ChartsManager
-from "../ui/charts.js";
+    import {
+      renderStyleMap
+    }
+    from "../ui/styleMap.js";
 
-import PdfGenerator
-from "../services/pdfGenerator.js";
+    import {
+      getStyleName,
+      getStyleColor,
+      getStyleIcon
+    }
+    from "../data/styles.js";
 
-const storedProfile =
-  localStorage.getItem(
-    "conecta360Profile"
-  );
+    const answers =
+      JSON.parse(
+        localStorage.getItem(
+          "answers"
+        ) || "{}"
+      );
 
-if(!storedProfile){
+    const userData =
+      JSON.parse(
+        localStorage.getItem(
+          "userData"
+        ) || "{}"
+      );
 
-  alert(
-    "No existe ningún perfil calculado."
-  );
+    if (
+      Object.keys(
+        answers
+      ).length === 0
+    ) {
 
-  window.location.href =
-    "questionnaire.html";
-}
+      alert(
+        "No existen respuestas guardadas."
+      );
 
-const profile =
-  JSON.parse(storedProfile);
+      location.href =
+        "./questionnaire.html";
 
-renderProfile(profile);
+    }
 
-const charts =
-  new ChartsManager();
+    const result =
+      evaluateProfile(
+        userData,
+        answers
+      );
 
-charts.renderAll(
-  profile.scores
-);
+    renderReport(
+      result
+    );
 
-function renderProfile(profile){
+    function renderReport(
+      result
+    ) {
 
-  document
-  .getElementById("profileTag")
-  .textContent =
-  `${profile.primaryStyle} / ${profile.secondaryStyle}`;
+      document
+        .getElementById(
+          "userName"
+        )
+        .textContent =
+          result.user.name;
+
+      document
+        .getElementById(
+          "profileTitle"
+        )
+        .textContent =
+          result.summary.title;
 
-  document
-  .getElementById("participantData")
-  .innerHTML = `
+      document
+        .getElementById(
+          "profileSummary"
+        )
+        .textContent =
+          result.summary.summary;
+
+      document
+        .getElementById(
+          "profileType"
+        )
+        .textContent =
+          result.profile.profileType;
 
-    <p>
-      <strong>Nombre:</strong>
-      ${profile.name}
-    </p>
+      document
+        .getElementById(
+          "dominantStyles"
+        )
+        .textContent =
+          result.profile
+            .dominantStyles
+            .map(style =>
+              getStyleName(style)
+            )
+            .join(" · ");
 
-    <p>
-      <strong>Perfil principal:</strong>
-      ${profile.primaryStyle}
-    </p>
+      document
+        .getElementById(
+          "weakestStyle"
+        )
+        .textContent =
+          getStyleName(
+            result.profile
+              .weakestStyle
+          );
 
-    <p>
-      <strong>Perfil secundario:</strong>
-      ${profile.secondaryStyle}
-    </p>
+      document
+        .getElementById(
+          "intensity"
+        )
+        .textContent =
+          result.profile
+            .intensity;
 
-    <p>
-      <strong>Código:</strong>
-      ${profile.profileCode}
-    </p>
+      renderDominantCard(
+        result.profile
+      );
 
-  `;
+      renderPercentages(
+        "percentages",
+        result.profile
+          .percentages
+      );
 
-  document
-  .getElementById(
-    "executiveSummary"
-  )
-  .textContent =
-    profile.summary;
+      renderStyleMap(
+        "styleMap",
+        result.profile
+      );
 
-  document
-  .getElementById(
-    
+      renderList(
+        "strengths",
+        result.strengths
+      );
+
+      renderList(
+        "risks",
+        result.risks
+      );
+
+    }
+
+    function renderDominantCard(
+      profile
+    ) {
+
+      const dominant =
+        profile
+          .dominantStyles[0];
+
+      document
+        .getElementById(
+          "dominantProfileCard"
+        )
+        .innerHTML = `
+
+          <div
+            style="
+              text-align:center;
+              padding:30px;
+              border-radius:16px;
+              border:3px solid ${getStyleColor(dominant)};
+            ">
+
+            <h1>
+
+              ${getStyleIcon(dominant)}
+
+            </h1>
+
+            <h2
+              style="
+                border:none;
+                padding:0;
+                margin:0;
+                color:${getStyleColor(dominant)};
+              ">
+
+              ${getStyleName(dominant)}
+
+            </h2>
+
+          </div>
+
+        `;
+
+    }
+
+    function renderList(
+      elementId,
+      items
+    ) {
+
+      const ul =
+        document.getElementById(
+          elementId
+        );
+
+      ul.innerHTML = "";
+
+      items.forEach(item => {
+
+        const li =
+          document.createElement(
+            "li"
+          );
+
+        li.textContent =
+          item;
+
+        ul.appendChild(
+          li
+        );
+
+      });
+
+    }
+
+    document
+      .getElementById(
+        "backBtn"
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          location.href =
+            "./questionnaire.html";
+
+        }
+      );
+
+    document
+      .getElementById(
+        "compareBtn"
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          location.href =
+            "./compare.html";
+
+        }
+      );
+
+  </script>
+
+</body>
+
+</html>
