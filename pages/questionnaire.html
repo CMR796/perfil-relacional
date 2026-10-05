@@ -306,24 +306,90 @@
             )
           );
 
-          localStorage.setItem(
-            "userData",
-            JSON.stringify({
-
-              name,
-
-              email:
-                document
-                  .getElementById(
-                    "email"
-                  )
-                  .value
-
-            })
-          );
-
-          window.location.href =
-            "./report.html";
+     const result = {
+ 
+generatedAt:
+new Date().toISOString(),
+ 
+user: {
+ 
+name,
+ 
+email:
+document
+.getElementById(
+"email"
+)
+.value
+ 
+},
+ 
+profile: {
+ 
+profileType: "PURO",
+ 
+dominantStyleName:
+"Directivo",
+ 
+dominantStyleIcon:
+"🎯",
+ 
+weakestStyle:
+"Analítico",
+ 
+intensity:
+"MEDIA",
+ 
+percentages: {
+ 
+tierra: 25,
+ 
+fuego: 35,
+ 
+agua: 20,
+ 
+aire: 20
+ 
+}
+ 
+},
+ 
+summary: {
+ 
+title:
+"Directivo",
+ 
+summary:
+"Perfil de prueba generado correctamente."
+ 
+},
+ 
+strengths: [
+ 
+"Liderazgo",
+"Rapidez de decisión",
+"Orientación a resultados"
+ 
+],
+ 
+risks: [
+ 
+"Impaciencia",
+"Exceso de presión"
+ 
+]
+ 
+};
+ 
+localStorage.setItem(
+"conecta360Profile",
+JSON.stringify(
+result
+)
+);
+ 
+window.location.href =
+"./report.html";
 
         }
       );
