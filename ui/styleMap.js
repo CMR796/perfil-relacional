@@ -1,173 +1,198 @@
 // ui/styleMap.js
 
-export default class StyleMap {
+import {
+  getStyleName,
+  getStyleColor,
+  getStyleIcon
+}
+from "../data/styles.js";
 
-  static styles = {
+/**
+ * Mapa profesional de estilos
+ */
 
-    fuego: {
-      id: "fuego",
-      name: "Fuego",
-      icon: "🔥",
-      color: "#ef4444",
+export function renderStyleMap(
+  containerId,
+  profile
+) {
 
-      description:
-        "Acción, liderazgo, iniciativa y orientación a resultados.",
+  const container =
+    document.getElementById(
+      containerId
+    );
 
-      strengths: [
-        "Decisión",
-        "Valentía",
-        "Impulso",
-        "Liderazgo",
-        "Rapidez"
-      ],
+  if (!container) return;
 
-      risks: [
-        "Impaciencia",
-        "Dominancia",
-        "Impulsividad"
-      ]
-    },
+  const percentages =
+    profile.percentages;
 
-    tierra: {
-      id: "tierra",
-      name: "Tierra",
-      icon: "🌍",
-      color: "#16a34a",
+  const dominantStyle =
+    profile.dominantStyles[0];
 
-      description:
-        "Análisis, organización, precisión y metodología.",
+  container.innerHTML = `
 
-      strengths: [
-        "Rigor",
-        "Planificación",
-        "Calidad",
-        "Precisión",
-        "Fiabilidad"
-      ],
+    <div class="style-map">
 
-      risks: [
-        "Perfeccionismo",
-        "Sobreanálisis",
-        "Lentitud en decidir"
-      ]
-    },
+      <div class="quadrant top-left">
 
-    agua: {
-      id: "agua",
-      name: "Agua",
-      icon: "💧",
-      color: "#2563eb",
+        <div
+          class="quadrant-card"
+          style="
+            border-left:5px solid ${getStyleColor("tierra")}
+          ">
 
-      description:
-        "Empatía, escucha, cooperación y comprensión emocional.",
+          <h3>
+            ${getStyleIcon("tierra")}
+            Analítico
+          </h3>
 
-      strengths: [
-        "Empatía",
-        "Escucha activa",
-        "Apoyo",
-        "Cooperación",
-        "Confianza"
-      ],
+          <p>
+            ${percentages.tierra}%
+          </p>
 
-      risks: [
-        "Evitar conflictos",
-        "Dependencia de aprobación",
-        "Exceso de sensibilidad"
-      ]
-    },
+        </div>
 
-    aire: {
-      id: "aire",
-      name: "Aire",
-      icon: "🌬",
-      color: "#f59e0b",
+      </div>
 
-      description:
-        "Creatividad, comunicación, innovación y adaptabilidad.",
+      <div class="quadrant top-right">
 
-      strengths: [
-        "Creatividad",
-        "Persuasión",
-        "Flexibilidad",
-        "Entusiasmo",
-        "Visión"
-      ],
+        <div
+          class="quadrant-card"
+          style="
+            border-left:5px solid ${getStyleColor("agua")}
+          ">
 
-      risks: [
-        "Dispersión",
-        "Falta de seguimiento",
-        "Improvisación excesiva"
-      ]
-    }
+          <h3>
+            ${getStyleIcon("agua")}
+            Relacional
+          </h3>
+
+          <p>
+            ${percentages.agua}%
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="quadrant bottom-left">
+
+        <div
+          class="quadrant-card"
+          style="
+            border-left:5px solid ${getStyleColor("fuego")}
+          ">
+
+          <h3>
+            ${getStyleIcon("fuego")}
+            Directivo
+          </h3>
+
+          <p>
+            ${percentages.fuego}%
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="quadrant bottom-right">
+
+        <div
+          class="quadrant-card"
+          style="
+            border-left:5px solid ${getStyleColor("aire")}
+          ">
+
+          <h3>
+            ${getStyleIcon("aire")}
+            Facilitador
+          </h3>
+
+          <p>
+            ${percentages.aire}%
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div
+      style="
+        margin-top:25px;
+        padding:25px;
+        border-radius:16px;
+        text-align:center;
+        border:3px solid ${getStyleColor(dominantStyle)};
+      ">
+
+      <h2>
+
+        Perfil predominante
+
+      </h2>
+
+      <h1
+        style="
+          color:${getStyleColor(dominantStyle)};
+        ">
+
+        ${getStyleIcon(dominantStyle)}
+        ${getStyleName(dominantStyle)}
+
+      </h1>
+
+    </div>
+
+  `;
+
+}
+
+/**
+ * Obtiene estilo principal
+ */
+export function getDominantStyle(
+  profile
+) {
+
+  return profile
+    .dominantStyles[0];
+
+}
+
+/**
+ * Texto explicativo
+ */
+export function getStyleMapDescription(
+  profile
+) {
+
+  const style =
+    getDominantStyle(
+      profile
+    );
+
+  const descriptions = {
+
+    fuego:
+      "Predominio de liderazgo, iniciativa y orientación a resultados.",
+
+    tierra:
+      "Predominio de análisis, rigor y planificación.",
+
+    agua:
+      "Predominio de empatía, escucha y relaciones de confianza.",
+
+    aire:
+      "Predominio de creatividad, innovación y comunicación."
 
   };
 
-  static get(style) {
-    return this.styles[style];
-  }
+  return descriptions[
+    style
+  ];
 
-  static getAll() {
-    return Object.values(
-      this.styles
-    );
-  }
-
-  static getColor(style) {
-    return this.styles[style]?.color
-      || "#64748b";
-  }
-
-  static getName(style) {
-    return this.styles[style]?.name
-      || style;
-  }
-
-  static getIcon(style) {
-    return this.styles[style]?.icon
-      || "⭕";
-  }
-
-  static getDescription(style) {
-    return this.styles[style]
-      ?.description || "";
-  }
-
-  static getStrengths(style) {
-    return this.styles[style]
-      ?.strengths || [];
-  }
-
-  static getRisks(style) {
-    return this.styles[style]
-      ?.risks || [];
-  }
-
-  static getStyleLabel(style) {
-
-    const styleData =
-      this.get(style);
-
-    if (!styleData) {
-      return style;
-    }
-
-    return `${styleData.icon} ${styleData.name}`;
-  }
-
-  static getStylePair(
-    primary,
-    secondary
-  ) {
-
-    return {
-      primary:
-        this.get(primary),
-
-      secondary:
-        this.get(secondary),
-
-      title:
-        `${this.getStyleLabel(primary)} + ${this.getStyleLabel(secondary)}`
-    };
-  }
 }
+``
