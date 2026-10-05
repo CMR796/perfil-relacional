@@ -429,6 +429,6 @@ export const QUESTIONS = [
   text: "Me resulta fácil inspirar a otras personas.",
   style: "aire",
   weight: 1
-},
+}
   ];
 
