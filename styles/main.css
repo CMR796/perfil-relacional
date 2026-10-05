@@ -388,3 +388,56 @@ li::before {
     width: 100%;
   }
 }
+.style-map {
+ 
+display:grid;
+ 
+grid-template-columns:
+repeat(2,1fr);
+ 
+gap:20px;
+ 
+}
+ 
+.quadrant-card {
+ 
+background:white;
+ 
+border-radius:12px;
+ 
+padding:20px;
+ 
+box-shadow:
+0 2px 8px rgba(
+0,
+0,
+0,
+.05
+);
+ 
+}
+ 
+.quadrant-card h3 {
+ 
+margin-bottom:10px;
+ 
+}
+ 
+.quadrant-card p {
+ 
+font-size:1.4rem;
+ 
+font-weight:bold;
+ 
+}
+ 
+@media (max-width:768px) {
+ 
+.style-map {
+ 
+grid-template-columns:
+1fr;
+ 
+}
+ 
+}
