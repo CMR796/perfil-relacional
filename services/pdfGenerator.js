@@ -1,19 +1,22 @@
 // services/pdfGenerator.js
-
-export class PDFGenerator {
-
-  generate(report) {
-
-    console.log(
-      "Generación PDF pendiente",
-      report
-    );
-
-  }
-
+ 
+class PDFGenerator {
+ 
+generate(report) {
+ 
+console.log(
+"Informe PDF pendiente",
+report
+);
+ 
+alert(
+"La generación PDF se implementará en la siguiente versión."
+);
 }
-
+ 
+}
+ 
 const pdfGenerator =
-  new PDFGenerator();
-
+new PDFGenerator();
+ 
 export default pdfGenerator;
