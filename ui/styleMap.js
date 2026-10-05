@@ -8,13 +8,32 @@ import {
 from "../data/styles.js";
 
 /**
- * Mapa profesional de estilos
+ * Obtiene datos independientemente
+ * de si recibe:
+ *
+ * result.profile
+ * o
+ * profile
  */
+function normalizeProfile(data) {
 
+  if (data.profile) {
+    return data.profile;
+  }
+
+  return data;
+}
+
+/**
+ * Render principal
+ */
 export function renderStyleMap(
   containerId,
-  profile
+  data
 ) {
+
+  const profile =
+    normalizeProfile(data);
 
   const container =
     document.getElementById(
@@ -23,99 +42,38 @@ export function renderStyleMap(
 
   if (!container) return;
 
+  if (!profile) return;
+
   const percentages =
-    profile.percentages;
+    profile.percentages || {};
 
   const dominantStyle =
-    profile.dominantStyles[0];
+    profile.dominantStyles?.[0]
+      || "tierra";
 
   container.innerHTML = `
 
     <div class="style-map">
 
-      <div class="quadrant top-left">
+      ${buildCard(
+        "tierra",
+        percentages.tierra || 0
+      )}
 
-        <div
-          class="quadrant-card"
-          style="
-            border-left:5px solid ${getStyleColor("tierra")}
-          ">
+      ${buildCard(
+        "agua",
+        percentages.agua || 0
+      )}
 
-          <h3>
-            ${getStyleIcon("tierra")}
-            Analítico
-          </h3>
+      ${buildCard(
+        "fuego",
+        percentages.fuego || 0
+      )}
 
-          <p>
-            ${percentages.tierra}%
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="quadrant top-right">
-
-        <div
-          class="quadrant-card"
-          style="
-            border-left:5px solid ${getStyleColor("agua")}
-          ">
-
-          <h3>
-            ${getStyleIcon("agua")}
-            Relacional
-          </h3>
-
-          <p>
-            ${percentages.agua}%
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="quadrant bottom-left">
-
-        <div
-          class="quadrant-card"
-          style="
-            border-left:5px solid ${getStyleColor("fuego")}
-          ">
-
-          <h3>
-            ${getStyleIcon("fuego")}
-            Directivo
-          </h3>
-
-          <p>
-            ${percentages.fuego}%
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="quadrant bottom-right">
-
-        <div
-          class="quadrant-card"
-          style="
-            border-left:5px solid ${getStyleColor("aire")}
-          ">
-
-          <h3>
-            ${getStyleIcon("aire")}
-            Facilitador
-          </h3>
-
-          <p>
-            ${percentages.aire}%
-          </p>
-
-        </div>
-
-      </div>
+      ${buildCard(
+        "aire",
+        percentages.aire || 0
+      )}
 
     </div>
 
@@ -129,9 +87,7 @@ export function renderStyleMap(
       ">
 
       <h2>
-
         Perfil predominante
-
       </h2>
 
       <h1
@@ -147,32 +103,68 @@ export function renderStyleMap(
     </div>
 
   `;
-
 }
 
 /**
- * Obtiene estilo principal
+ * Tarjeta estilo
  */
-export function getDominantStyle(
-  profile
+function buildCard(
+  style,
+  percentage
 ) {
 
-  return profile
-    .dominantStyles[0];
+  return `
+
+    <div
+      class="quadrant-card"
+      style="
+        border-left:5px solid ${getStyleColor(style)};
+      ">
+
+      <h3>
+
+        ${getStyleIcon(style)}
+        ${getStyleName(style)}
+
+      </h3>
+
+      <p>
+
+        ${percentage}%
+
+      </p>
+
+    </div>
+
+  `;
+}
+
+/**
+ * Devuelve estilo predominante
+ */
+export function getDominantStyle(
+  data
+) {
+
+  const profile =
+    normalizeProfile(data);
+
+  return (
+    profile.dominantStyles?.[0]
+    || "tierra"
+  );
 
 }
 
 /**
- * Texto explicativo
+ * Texto descriptivo
  */
 export function getStyleMapDescription(
-  profile
+  data
 ) {
 
   const style =
-    getDominantStyle(
-      profile
-    );
+    getDominantStyle(data);
 
   const descriptions = {
 
@@ -180,19 +172,16 @@ export function getStyleMapDescription(
       "Predominio de liderazgo, iniciativa y orientación a resultados.",
 
     tierra:
-      "Predominio de análisis, rigor y planificación.",
+      "Predominio de análisis, planificación y rigor.",
 
     agua:
-      "Predominio de empatía, escucha y relaciones de confianza.",
+      "Predominio de empatía, colaboración y relaciones de confianza.",
 
     aire:
       "Predominio de creatividad, innovación y comunicación."
 
   };
 
-  return descriptions[
-    style
-  ];
+  return descriptions[style];
 
 }
-``
