@@ -1,352 +1,198 @@
-// services/profileEngine.js
+// services/profileGenerator.js
  
-import ScoringEngine from "./scoringEngine.js";
+const PROFILE_TEXTS = {
  
-class ProfileEngine {
+tierra: {
  
-constructor() {
-this.version = "1.0.0";
+title: "Analítico",
+ 
+summary:
+"Las personas analíticas destacan por su capacidad de análisis, organización, rigor y toma de decisiones fundamentadas.",
+ 
+strengths: [
+ 
+"Pensamiento estructurado",
+"Capacidad analítica",
+"Planificación",
+"Atención al detalle",
+"Fiabilidad",
+"Calidad"
+ 
+],
+ 
+risks: [
+ 
+"Exceso de análisis",
+"Perfeccionismo",
+"Rigidez",
+"Lentitud en algunas decisiones"
+ 
+]
+ 
+},
+ 
+fuego: {
+ 
+title: "Directivo",
+ 
+summary:
+"Las personas directivas destacan por su orientación a resultados, liderazgo, rapidez de decisión y capacidad de acción.",
+ 
+strengths: [
+ 
+"Liderazgo",
+"Determinación",
+"Rapidez",
+"Iniciativa",
+"Orientación a objetivos",
+"Capacidad de ejecución"
+ 
+],
+ 
+risks: [
+ 
+"Impaciencia",
+"Exceso de presión",
+"Escucha insuficiente",
+"Impulsividad"
+ 
+]
+ 
+},
+ 
+aire: {
+ 
+title: "Facilitador",
+ 
+summary:
+"Las personas facilitadoras destacan por su creatividad, innovación, comunicación y generación de nuevas ideas.",
+ 
+strengths: [
+ 
+"Creatividad",
+"Comunicación",
+"Flexibilidad",
+"Innovación",
+"Entusiasmo",
+"Adaptabilidad"
+ 
+],
+ 
+risks: [
+ 
+"Dispersión",
+"Pérdida de foco",
+"Exceso de optimismo",
+"Falta de seguimiento"
+ 
+]
+ 
+},
+ 
+agua: {
+ 
+title: "Relacional",
+ 
+summary:
+"Las personas relacionales destacan por la empatía, la escucha, la cooperación y la construcción de relaciones de confianza.",
+ 
+strengths: [
+ 
+"Empatía",
+"Escucha activa",
+"Colaboración",
+"Paciencia",
+"Lealtad",
+"Confianza"
+ 
+],
+ 
+risks: [
+ 
+"Evitar conflictos",
+"Exceso de adaptación",
+"Dificultad para decir no",
+"Indecisión"
+ 
+]
+ 
 }
  
-/**
-* Genera un perfil completo
-*/
-generateProfile(userData, responses) {
- 
-const scoringResult =
-ScoringEngine.calculate(responses);
- 
-const profile = {
- 
-id: this.createId(),
- 
-...userData,
- 
-...scoringResult,
- 
-summary: this.generateSummary(
-scoringResult.primaryStyle,
-scoringResult.secondaryStyle
-),
- 
-strengths: this.getStrengths(
-scoringResult.primaryStyle
-),
- 
-risks: this.getRisks(
-scoringResult.primaryStyle
-),
- 
-recommendations:
-this.getRecommendations(
-scoringResult.primaryStyle
-),
- 
-communication:
-this.getCommunicationGuide(
-scoringResult.primaryStyle
-)
 };
  
-return profile;
-}
- 
 /**
-* Guardar perfil
+* Traducción estilos
 */
-saveProfile(profile) {
+export function getStyleName(style) {
  
-const profiles =
-this.getStoredProfiles();
+return PROFILE_TEXTS[style]?.title || style;
  
-profiles.push(profile);
- 
-localStorage.setItem(
-"conecta360Profiles",
-JSON.stringify(profiles)
-);
- 
-localStorage.setItem(
-"conecta360Profile",
-JSON.stringify(profile)
-);
- 
-return profile;
-}
- 
-/**
-* Obtener todos los perfiles
-*/
-getStoredProfiles() {
- 
-const data =
-localStorage.getItem(
-"conecta360Profiles"
-);
- 
-return data
-? JSON.parse(data)
-: [];
-}
- 
-/**
-* Obtener último perfil
-*/
-getLastProfile() {
- 
-const profile =
-localStorage.getItem(
-"conecta360Profile"
-);
- 
-return profile
-? JSON.parse(profile)
-: null;
-}
- 
-/**
-* Obtener perfil por índice
-*/
-getProfile(index) {
- 
-const profiles =
-this.getStoredProfiles();
- 
-return profiles[index] || null;
-}
- 
-/**
-* Eliminar perfil
-*/
-deleteProfile(index) {
- 
-const profiles =
-this.getStoredProfiles();
- 
-profiles.splice(index, 1);
- 
-localStorage.setItem(
-"conecta360Profiles",
-JSON.stringify(profiles)
-);
-}
- 
-/**
-* Eliminar todos
-*/
-clearProfiles() {
- 
-localStorage.removeItem(
-"conecta360Profiles"
-);
- 
-localStorage.removeItem(
-"conecta360Profile"
-);
-}
- 
-/**
-* Exportar perfil
-*/
-exportProfile(profile) {
- 
-return JSON.stringify(
-profile,
-null,
-2
-);
-}
- 
-/**
-* Importar perfil
-*/
-importProfile(json) {
- 
-return JSON.parse(json);
-}
- 
-/**
-* Generar ID
-*/
-createId() {
- 
-return (
-"C360-" +
-Date.now() +
-"-" +
-Math.floor(
-Math.random() * 1000
-)
-);
 }
  
 /**
 * Resumen ejecutivo
 */
-generateSummary(
-primary,
-secondary
-) {
+export function generateSummary(profile) {
  
-return `
-Tu estilo predominante es ${primary}
-con influencia secundaria ${secondary}.
+const style =
+profile.dominantStyles[0];
  
-Este perfil combina rasgos que afectan
-a la forma de comunicarte, colaborar,
-tomar decisiones y gestionar relaciones.
+return {
  
-Comprender tus preferencias permite
-adaptar mejor tu comunicación y mejorar
-la calidad de tus interacciones.
-`;
+title:
+`${PROFILE_TEXTS[style].title}`,
+ 
+summary:
+PROFILE_TEXTS[style].summary
+ 
+};
+ 
 }
  
 /**
 * Fortalezas
 */
-getStrengths(style) {
+export function generateStrengths(profile) {
  
-const strengths = {
+const style =
+profile.dominantStyles[0];
  
-Directivo: [
-"Capacidad de liderazgo",
-"Orientación a resultados",
-"Iniciativa",
-"Determinación",
-"Resolución de problemas"
-],
+return PROFILE_TEXTS[
+style
+].strengths;
  
-Analítico: [
-"Pensamiento crítico",
-"Precisión",
-"Planificación",
-"Rigor",
-"Calidad"
-],
- 
-Relacional: [
-"Empatía",
-"Escucha activa",
-"Trabajo en equipo",
-"Motivación",
-"Comunicación"
-],
- 
-Facilitador: [
-"Paciencia",
-"Colaboración",
-"Apoyo a otros",
-"Estabilidad",
-"Fiabilidad"
-]
-};
- 
-return strengths[style] || [];
 }
  
 /**
 * Riesgos
 */
-getRisks(style) {
+export function generateRisks(profile) {
  
-const risks = {
+const style =
+profile.dominantStyles[0];
  
-Directivo: [
-"Impaciencia",
-"Exceso de control",
-"Escucha limitada"
-],
+return PROFILE_TEXTS[
+style
+].risks;
  
-Analítico: [
-"Perfeccionismo",
-"Sobreanálisis",
-"Retrasar decisiones"
-],
- 
-Relacional: [
-"Buscar aprobación",
-"Evitar conflictos",
-"Exceso de implicación"
-],
- 
-Facilitador: [
-"Poca asertividad",
-"Resistencia al cambio",
-"Evitar confrontaciones"
-]
-};
- 
-return risks[style] || [];
 }
  
 /**
-* Recomendaciones
+* Perfil completo
 */
-getRecommendations(style) {
+export function generateProfile(profile) {
  
-const recommendations = {
+return {
  
-Directivo: [
-"Escucha activamente antes de decidir.",
-"Dedica tiempo a entender otros puntos de vista.",
-"Evita imponer soluciones demasiado rápido."
-],
+summary:
+generateSummary(profile),
  
-Analítico: [
-"Busca equilibrio entre análisis y acción.",
-"Acepta cierto nivel de incertidumbre.",
-"Evita el perfeccionismo excesivo."
-],
+strengths:
+generateStrengths(profile),
  
-Relacional: [
-"Establece límites claros.",
-"Mantén conversaciones difíciles cuando sea necesario.",
-"Combina empatía con objetividad."
-],
+risks:
+generateRisks(profile)
  
-Facilitador: [
-"Practica la asertividad.",
-"Expresa tu opinión con claridad.",
-"No evites conflictos constructivos."
-]
 };
  
-return recommendations[style] || [];
 }
- 
-/**
-* Comunicación
-*/
-getCommunicationGuide(style) {
- 
-const guides = {
- 
-Directivo:
-"Las personas directivas valoran mensajes claros, breves y orientados a resultados.",
- 
-Analítico:
-"Las personas analíticas prefieren datos, precisión y razonamiento estructurado.",
- 
-Relacional:
-"Las personas relacionales valoran la cercanía, la participación y la empatía.",
- 
-Facilitador:
-"Las personas facilitadoras prefieren entornos colaborativos y respetuosos."
-};
- 
-return guides[style] || "";
-}
- 
-}
- 
-const profileEngine =
-new ProfileEngine();
- 
-export {
-ProfileEngine,
-profileEngine
-};
- 
-export default profileEngine;
-``
