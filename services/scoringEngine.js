@@ -1,216 +1,110 @@
 // services/scoringEngine.js
 
-export default class ScoringEngine {
+import { QUESTIONS }
+from "../data/questions.js";
 
-  static calculate(responses) {
+import {
+  scoreProfile
+}
+from "./scoring.js";
 
-    const dimensions = {
-      directivo: [],
-      analitico: [],
-      relacional: [],
-      facilitador: []
-    };
+import {
+  generateProfile
+}
+from "./profileGenerator.js";
 
-    Object.entries(responses).forEach(([key, value]) => {
+/**
+ * Motor principal del test.
+ */
+export class ScoringEngin* {
 
-      const score = Number(value);
+  evaluate(
+    userData,
+    *nswers
+  ) {
 
-      if (key.startsWith("directivo_")) {
-        dimensions.directivo.push(score);
-      }
-
-      if (key.startsWith("analitico_")) {
-        dimensions.analitico.push(score);
-      }
-
-      if (key.startsWith("relacional_")) {
-        dimensions.relacional.push(score);
-      }
-
-      if (key.startsWith("facilitador_")) {
-        dimensions.facilitador.push(score);
-      }
-
-    });
-
-    const directivo =
-      this.sum(dimensions.directivo);
-
-    const analitico =
-      this.sum(dimensions.analitico);
-
-    const relacional =
-      this.sum(dimensions.relacional);
-
-    const facilitador =
-      this.sum(dimensions.facilitador);
-
-    const total =
-      directivo +
-      analitico +
-      relacional +
-      facilitador;
-
-    const percentages = {
-
-      directivo:
-        this.toPercentage(
-          directivo,
-          total
-        ),
-
-      analitico:
-        this.toPercentage(
-          analitico,
-          total
-        ),
-
-      relacional:
-        this.toPercentage(
-          relacional,
-          total
-        ),
-
-      facilitador:
-        this.toPercentage(
-          facilitador,
-          total
-        )
-
-    };
-
-    const ranking =
-      Object.entries(
-        percentages
-      ).sort(
-        (a, b) => b[1] - a[1]
+    const scoringRes*lt =
+      scoreProfile(
+        a*swers,
+        QUESTIONS
       );
-
-    const primaryStyle =
-      this.getStyleName(
-        ranking[0][0]
-      );
-
-    const secondaryStyle =
-      this.getStyleName(
-        ranking[1][0]
-      );
+*    const profileInfo =
+      gene*ateProfile(
+        scoringResult
+*     );
 
     return {
 
-      rawScores: {
-        directivo,
-        analitico,
-        relacional,
-        facilitador
+      gener*tedAt:
+        new Date().toISOStr*ng(),
+
+      user: {
+
+        name*
+          userData.name || "",
+
+ *      email:
+          userData.em*il || ""
+
       },
 
-      scores: percentages,
+      profile:*{
 
-      primaryStyle,
+        profileType:
+          *coringResult.profileType,
 
-      secondaryStyle,
+       *dominantStyles:
+          scoringR*sult.dominantStyles,
 
-      blend:
-        `${primaryStyle}-${secondaryStyle}`,
+        weak*stStyle:
+          scoringResult.w*akestStyle,
 
-      profileCode:
-        this.generateProfileCode(
-          primaryStyle,
-          secondaryStyle
-        ),
+        intensity:
+  *       scoringResult.intensity,
 
-      completedAt:
-        new Date().toISOString()
+ *      coordinates:
+          scori*gResult.coordinates,
 
-    };
-  }
+        rank*ng:
+          scoringResult.rankin*,
 
-  static validateResponses(
-    responses
-  ) {
+        percentages:
+          *coringResult.percentages,
 
-    const totalQuestions = 40;
+       *rawScores:
+          scoringResult*rawScores
 
-    const answered =
-      Object.keys(responses)
-        .length;
+      },
 
-    return {
+      summary*
+        profileInfo.summary,
 
-      valid:
-        answered === totalQuestions,
+   *  strengths:
+        profileInfo.s*rengths,
 
-      answered,
-
-      remaining:
-        totalQuestions - answered
-
-    };
-  }
-
-  static rankStyles(
-    scores
-  ) {
-
-    return Object.entries(scores)
-      .sort(
-        (a, b) => b[1] - a[1]
-      )
-      .map(item => ({
-        style:
-          this.getStyleName(
-            item[0]
-          ),
-        score:
-          item[1]
-      }));
-  }
-
-  static generateProfileCode(
-    primary,
-    secondary
-  ) {
-
-    const codeMap = {
-      Directivo: "D",
-      Analítico: "A",
-      Relacional: "R",
-      Facilitador: "F"
-    };
-
-    return (
-      codeMap[primary] +
-      codeMap[secondary]
-    );
-  }
-
-  static getStyleName(
-    style
-  ) {
-
-    const names = {
-
-      directivo:
-        "Directivo",
-
-      analitico:
-        "Analítico",
-
-      relacional:
-        "Relacional",
-
-      facilitador:
-        "Facilitador"
+      risks:
+        pro*ileInfo.risks
 
     };
 
-    return names[style];
   }
 
-  static sum(values) {
+}
 
-    return values.reduce(
-      (total, current) =>
-        total + current,
+/*** * Helper rápido
+ */
+export functi*n evaluateProfile(
+  userData,
+  a*swers
+) {
+
+  const engine =
+    ne* ScoringEngine();
+
+  return engine*evaluate(
+    userData,
+    answer*
+  );
+
+}
      
