@@ -3,437 +3,565 @@
 
 <head>
 
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
+<title>Conecta360 | Informe</title>
 
-  <title>
-    Informe de Perfil Relacional
-  </title>
+https://cdn.jsdelivr.net/npm/chart.jsscript>
 
-  <link
-    rel="stylesheet"
-    href="../styles/main.css">
+<style>
 
-<">
+:root{
+  --primary:#2962ff;
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --text:#1f2937;
+}
 
-    <header class="report-header">
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
 
-      <h1>
-        Informe de Perfil Relacional
-      </h1>
+body{
+  background:var(--bg);
+  color:var(--text);
+}
 
-      <p id="userName">
-        Participante
-      </p>
+.container{
+  width:min(1200px,95%);
+  margin:20px auto;
+}
 
-    </header>
+.hero{
+  background:linear-gradient(
+    135deg,
+    #2962ff,
+    #5d8dff
+  );
 
-    <section class="card">
+  color:white;
+  padding:40px;
+  border-radius:20px;
+  margin-bottom:20px;
+}
 
-      <h2>
-        Perfil Predominante
-      </h2>
+.hero h1{
+  margin-bottom:10px;
+}
 
-      <div
-        id="dominantProfileCard">
+.hero p{
+  opacity:.95;
+}
 
-      </div>
+.card{
 
-    </section>
+  background:var(--card);
 
-    <section class="card">
+  border-radius:20px;
 
-      <h2>
-        Resumen Ejecutivo
-      </h2>
+  padding:25px;
 
-      <h3 id="profileTitle">
-      </h3>
+  margin-bottom:20px;
 
-      <p id="profileSummary">
-      </p>
+  box-shadow:
+  0 3px 10px
+  rgba(0,0,0,.08);
+}
 
-    </section>
+.section-title{
+  color:#2962ff;
+  margin-bottom:20px;
+}
 
-    <section class="card">
+.grid{
+  display:grid;
+  grid-template-columns:
+     repeat(
+       auto-fit,
+       minmax(220px,1fr)
+     );
 
-      <h2>
-        Resultado del Perfil
-      </h2>
+  gap:20px;
+}
 
-      <div class="profile-grid">
+.score-box{
 
-        <div>
+  background:#f5f9ff;
 
-          <strong>
-            Tipo de perfil
-          </strong>
+  padding:20px;
 
-          <p id="profileType">
-          </p>
+  border-radius:15px;
 
-        </div>
+  text-align:center;
+}
 
-        <div>
+.score-value{
+  font-size:2rem;
+  font-weight:bold;
+}
 
-          <strong>
-            Estilos dominantes
-          </strong>
+.chart-wrapper{
+  height:400px;
+}
 
-          <p id="dominantStyles">
-          </p>
+ul{
+  padding-left:20px;
+}
 
-        </div>
+li{
+  margin-bottom:8px;
+}
 
-        <div>
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-          <strong>
-            Estilo menos utilizado
-          </strong>
+button{
 
-          <p id="weakestStyle">
-          </p>
+  border:none;
 
-        </div>
+  border-radius:10px;
 
-        <div>
+  padding:14px 20px;
 
-          <strong>
-            Intensidad
-          </strong>
+  cursor:pointer;
 
-          <p id="intensity">
-          </p>
+  font-weight:bold;
+}
 
-        </div>
+.primary{
+  background:#2962ff;
+  color:white;
+}
 
-      </div>
+.secondary{
+  background:#16a34a;
+  color:white;
+}
 
-    </section>
+.gray{
+  background:#e5e7eb;
+}
 
-    <section class="card">
+.profile-badge{
 
-      <h2>
-        Distribución de estilos
-      </h2>
+  display:inline-block;
 
-      <div id="percentages">
-      </div>
+  background:#2962ff;
 
-    </section>
+  color:white;
 
-    <section class="card">
+  border-radius:999px;
 
-      <h2>
-        Mapa de estilos
-      </h2>
+  padding:10px 18px;
 
-      <div id="styleMap">
-      </div>
+  margin-top:10px;
+}
 
-    </section>
+</style>
 
-    <section class="card">
+</head>
 
-      <h2>
-        Fortalezas principales
-      </h2>
+<body>
 
-      <ul id="strengths">
-      </ul>
+<div class="container">
 
-    </section>
+<div class="hero">
 
-    <section class="card">
+<h1>Conecta360</h1>
 
-      <h2>
-        Riesgos potenciales
-      </h2>
+<p>
+Informe de Perfil Relacional
+</p>
 
-      <ul id="risks">
-      </ul>
+<div
+ id="profileBadge"
+ class="profile-badge"
+>
+Cargando...
+</div>
 
-    </section>
+</div>
 
-    <section class="card action-panel">
+<div class="card">
 
-      <button id="backBtn">
+<h2 class="section-title">
+Participante
+</h2>
 
-        Volver al cuestionario
+<div id="userInfo"></div>
 
-      </button>
+</div>
 
-      <button id="compareBtn">
+<div class="card">
 
-        Comparar perfiles
+<h2 class="section-title">
+Resumen Ejecutivo
+</h2>
 
-      </button>
+<div id="summary"></div>
 
-    </section>
+</div>
 
-  </div>
+<div class="card">
 
-  <script type="module">
+<h2 class="section-title">
+Perfil Identificado
+</h2>
 
-    import {
-      evaluateProfile
-    }
-    from "../services/scoringEngine.js";
+<div id="profileData"></div>
 
-    import {
-      renderPercentages
-    }
-    from "../ui/charts.js";
+</div>
 
-    import {
-      renderStyleMap
-    }
-    from "../ui/styleMap.js";
+<div class="card">
 
-    import {
-      getStyleName,
-      getStyleColor,
-      getStyleIcon
-    }
-    from "../data/styles.js";
+<h2 class="section-title">
+Distribución de Estilos
+</h2>
 
-    const answers =
-      JSON.parse(
-        localStorage.getItem(
-          "answers"
-        ) || "{}"
-      );
+<div class="grid">
 
-    const userData =
-      JSON.parse(
-        localStorage.getItem(
-          "userData"
-        ) || "{}"
-      );
+<div class="score-box">
+<div class="score-value"
+     id="tierraScore">
+0%
+</div>
+<div>
+Analítico
+</div>
+</div>
 
-    if (
-      Object.keys(
-        answers
-      ).length === 0
-    ) {
+<div class="score-box">
+<div class="score-value"
+     id="fuegoScore">
+0%
+</div>
+<div>
+Directivo
+</div>
+</div>
 
-      alert(
-        "No existen respuestas guardadas."
-      );
+<div class="score-box">
+<div class="score-value"
+     id="aguaScore">
+0%
+</div>
+<div>
+Relacional
+</div>
+</div>
 
-      location.href =
-        "./questionnaire.html";
+<div class="score-box">
+<div class="score-value"
+     id="aireScore">
+0%
+</div>
+<div>
+Facilitador
+</div>
+</div>
 
-    }
+</div>
 
-    const result =
-      evaluateProfile(
-        userData,
-        answers
-      );
+</div>
 
-    renderReport(
-      result
+<div class="card">
+
+<h2 class="section-title">
+Gráfico de Perfil
+</h2>
+
+<div class="chart-wrapper">
+<canvas id="profileChart"></canvas>
+</div>
+
+</div>
+
+<div class="card">
+
+<h2 class="section-title">
+Fortalezas
+</h2>
+
+<ul id="strengths"></ul>
+
+</div>
+
+<div class="card">
+
+<h2 class="section-title">
+Riesgos Potenciales
+</h2>
+
+<ul id="risks"></ul>
+
+</div>
+
+<div class="card">
+
+<div class="actions">
+
+<button
+ class="primary"
+ id="downloadPdfBtn">
+Descargar PDF
+</button>
+
+<button
+ class="secondary"
+ onclick="window.location.href='questionnaire.html'">
+Nuevo Test
+</button>
+
+<button
+ class="gray"
+ onclick="window.location.href='admin.html'">
+Administración
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import PdfGenerator
+from "../services/pdfGenerator.js";
+
+const storedProfile =
+localStorage.getItem(
+  "conecta360Profile"
+);
+
+if(!storedProfile){
+
+  alert(
+    "No existe ningún perfil calculado."
+  );
+
+  window.location.href =
+  "questionnaire.html";
+}
+
+const result =
+JSON.parse(storedProfile);
+
+renderProfile(result);
+
+renderChart(
+ result.profile.percentages
+);
+
+function renderProfile(result){
+
+  document
+  .getElementById(
+    "profileBadge"
+  )
+  .textContent =
+    `${result.profile.dominantStyleIcon} ${result.profile.dominantStyleName}`;
+
+  document
+  .getElementById(
+    "userInfo"
+  )
+  .innerHTML = `
+
+    <p>
+      <strong>Nombre:</strong>
+      ${result.user.name}
+    </p>
+
+    <p>
+      <strong>Email:</strong>
+      ${result.user.email || "-"}
+    </p>
+
+    <p>
+      <strong>Fecha:</strong>
+      ${new Date(
+      result.generatedAt
+      ).toLocaleString()}
+    </p>
+
+  `;
+
+  document
+  .getElementById(
+    "summary"
+  )
+  .innerHTML = `
+    <h3>
+      ${result.summary.title}
+    </h3>
+
+    <p>
+      ${result.summary.summary}
+    </p>
+  `;
+
+  document
+  .getElementById(
+    "profileData"
+  )
+  .innerHTML = `
+
+    <p>
+      <strong>Tipo:</strong>
+      ${result.profile.profileType}
+    </p>
+
+    <p>
+      <strong>Intensidad:</strong>
+      ${result.profile.intensity}
+    </p>
+
+    <p>
+      <strong>Estilo dominante:</strong>
+      ${result.profile.dominantStyleName}
+    </p>
+
+    <p>
+      <strong>Estilo menos utilizado:</strong>
+      ${result.profile.weakestStyle}
+    </p>
+
+  `;
+
+  const p =
+  result.profile.percentages;
+
+  document.getElementById(
+    "tierraScore"
+  ).textContent =
+    `${p.tierra}%`;
+
+  document.getElementById(
+    "fuegoScore"
+  ).textContent =
+    `${p.fuego}%`;
+
+  document.getElementById(
+    "aguaScore"
+  ).textContent =
+    `${p.agua}%`;
+
+  document.getElementById(
+    "aireScore"
+  ).textContent =
+    `${p.aire}%`;
+
+  document
+  .getElementById(
+    "strengths"
+  )
+  .innerHTML =
+    result.strengths
+      .map(
+        item =>
+         `<li>${item}</li>`
+      )
+      .join("");
+
+  document
+  .getElementById(
+    "risks"
+  )
+  .innerHTML =
+    result.risks
+      .map(
+        item =>
+         `<li>${item}</li>`
+      )
+      .join("");
+}
+
+function renderChart(percentages){
+
+  const ctx =
+  document
+    .getElementById(
+      "profileChart"
     );
 
-    function renderReport(
-      result
-    ) {
+  new Chart(ctx, {
 
-      document
-        .getElementById(
-          "userName"
-        )
-        .textContent =
-          result.user.name;
+    type:"radar",
 
-      document
-        .getElementById(
-          "profileTitle"
-        )
-        .textContent =
-          result.summary.title;
+    data:{
 
-      document
-        .getElementById(
-          "profileSummary"
-        )
-        .textContent =
-          result.summary.summary;
+      labels:[
+        "Analítico",
+        "Directivo",
+        "Relacional",
+        "Facilitador"
+      ],
 
-      document
-        .getElementById(
-          "profileType"
-        )
-        .textContent =
-          result.profile.profileType;
+      datasets:[{
 
-      document
-        .getElementById(
-          "dominantStyles"
-        )
-        .textContent =
-          result.profile
-            .dominantStyles
-            .map(style =>
-              getStyleName(style)
-            )
-            .join(" · ");
+        label:"Perfil",
 
-      document
-        .getElementById(
-          "weakestStyle"
-        )
-        .textContent =
-          getStyleName(
-            result.profile
-              .weakestStyle
-          );
+        data:[
+          percentages.tierra,
+          percentages.fuego,
+          percentages.agua,
+          percentages.aire
+        ],
 
-      document
-        .getElementById(
-          "intensity"
-        )
-        .textContent =
-          result.profile
-            .intensity;
+        backgroundColor:
+          "rgba(41,98,255,.2)",
 
-      renderDominantCard(
-        result.profile
-      );
+        borderColor:
+          "#2962ff",
 
-      renderPercentages(
-        "percentages",
-        result.profile
-          .percentages
-      );
+        borderWidth:3
 
-      renderStyleMap(
-        "styleMap",
-        result.profile
-      );
+      }]
 
-      renderList(
-        "strengths",
-        result.strengths
-      );
+    },
 
-      renderList(
-        "risks",
-        result.risks
-      );
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
 
-    }
-
-    function renderDominantCard(
-      profile
-    ) {
-
-      const dominant =
-        profile
-          .dominantStyles[0];
-
-      document
-        .getElementById(
-          "dominantProfileCard"
-        )
-        .innerHTML = `
-
-          <div
-            style="
-              text-align:center;
-              padding:30px;
-              border-radius:16px;
-              border:3px solid ${getStyleColor(dominant)};
-            ">
-
-            <h1>
-
-              ${getStyleIcon(dominant)}
-
-            </h1>
-
-            <h2
-              style="
-                border:none;
-                padding:0;
-                margin:0;
-                color:${getStyleColor(dominant)};
-              ">
-
-              ${getStyleName(dominant)}
-
-            </h2>
-
-          </div>
-
-        `;
-
-    }
-
-    function renderList(
-      elementId,
-      items
-    ) {
-
-      const ul =
-        document.getElementById(
-          elementId
-        );
-
-      ul.innerHTML = "";
-
-      items.forEach(item => {
-
-        const li =
-          document.createElement(
-            "li"
-          );
-
-        li.textContent =
-          item;
-
-        ul.appendChild(
-          li
-        );
-
-      });
-
-    }
-
-    document
-      .getElementById(
-        "backBtn"
-      )
-      .addEventListener(
-        "click",
-        () => {
-
-          location.href =
-            "./questionnaire.html";
-
+      scales:{
+        r:{
+          beginAtZero:true,
+          max:50
         }
-      );
+      }
+    }
 
-    document
-      .getElementById(
-        "compareBtn"
-      )
-      .addEventListener(
-        "click",
-        () => {
+  });
+}
 
-          location.href =
-            "./compare.html";
+document
+.getElementById(
+ "downloadPdfBtn"
+)
+.addEventListener(
+ "click",
+ () => {
 
-        }
-      );
+   const pdf =
+   new PdfGenerator(
+     result
+   );
 
-  </script>
+   pdf.download();
+
+ }
+);
+
+</script>
 
 </body>
-
 </html>
