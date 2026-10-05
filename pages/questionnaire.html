@@ -21,9 +21,9 @@
 
 <body>
 
-  <div class="container
-      <h1>
-        Perfil Relacional
+  <div class="container">
+
+    <header classerfil Relacional
       </h1>
 
       <p>
@@ -236,4 +236,101 @@
       const percentage =
         Math.round(
           (answered / total)
+          * 100
+        );
+
+      document
+        .getElementById(
+          "progressBar"
+        )
+        .style.width =
+          percentage + "%";
+
+      document
+        .getElementById(
+          "progressText"
+        )
+        .textContent =
+          percentage +
+          "% completado";
+    }
+
+    document
+      .getElementById(
+        "generateBtn"
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          const name =
+            document
+              .getElementById(
+                "name"
+              )
+              .value
+              .trim();
+
+          if (!name) {
+
+            alert(
+              "Introduce tu nombre"
+            );
+
+            return;
+          }
+
+          const total =
+            QUESTIONS.length;
+
+          const answered =
+            Object.keys(
+              answers
+            ).length;
+
+          if (answered < total) {
+
+            alert(
+              `Faltan ${
+                total - answered
+              } preguntas por responder`
+            );
+
+            return;
+          }
+
+          localStorage.setItem(
+            "answers",
+            JSON.stringify(
+              answers
+            )
+          );
+
+          localStorage.setItem(
+            "userData",
+            JSON.stringify({
+
+              name,
+
+              email:
+                document
+                  .getElementById(
+                    "email"
+                  )
+                  .value
+
+            })
+          );
+
+          window.location.href =
+            "./report.html";
+
+        }
+      );
+
+  </script>
+
+</body>
+
+</html>
         
