@@ -1,4 +1,4 @@
-// services/profileGenerator.js
+// services/profileEngine.js
  
 const PROFILE_TEXTS = {
  
