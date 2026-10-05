@@ -1,160 +1,173 @@
 // ui/styleMap.js
 
-const COLORS = {
+export default class StyleMap {
 
-  tierra: "#8B7355",
-  fuego: "#E63946",
-  aire: "#0096C7",
-  agua: "#2A9D8F"
+  static styles = {
 
-};
+    fuego: {
+      id: "fuego",
+      name: "Fuego",
+      icon: "🔥",
+      color: "#ef4444",
 
-/**
- * Renderiza mapa de estilos
- */
-export function renderStyleMap(
-* containerId,
-  profile
-) {
+      description:
+        "Acción, liderazgo, iniciativa y orientación a resultados.",
 
-  con*t container =
-    document.getElem*ntById(
-      containerId
-    );
+      strengths: [
+        "Decisión",
+        "Valentía",
+        "Impulso",
+        "Liderazgo",
+        "Rapidez"
+      ],
 
-* if (!container) {
-    return;
-  }*
-  const percentages =
-    profile*percentages;
+      risks: [
+        "Impaciencia",
+        "Dominancia",
+        "Impulsividad"
+      ]
+    },
 
-  const dominant =
- *  profile.dominantStyles[0];
+    tierra: {
+      id: "tierra",
+      name: "Tierra",
+      icon: "🌍",
+      color: "#16a34a",
 
-  co*tainer.innerHTML = `
+      description:
+        "Análisis, organización, precisión y metodología.",
 
-    <div sty*e="
-      display:grid;
-      grid*template-columns:1fr 1fr;
-      ga*:20px;
-      margin-top:20px;
-    *>
+      strengths: [
+        "Rigor",
+        "Planificación",
+        "Calidad",
+        "Precisión",
+        "Fiabilidad"
+      ],
 
-      <div style="
-        back*round:rgba(139,115,85,0.15);
-     *  padding:20px;
-        border-rad*us:12px;
-      ">
-        <h3>🌍 T*erra</h3>
-        <strong>${percen*ages.tierra}%</strong>
-        <p>*nalítico</p>
-      </div>
+      risks: [
+        "Perfeccionismo",
+        "Sobreanálisis",
+        "Lentitud en decidir"
+      ]
+    },
 
-      <*iv style="
-        background:rgba*42,157,143,0.15);
-        padding:*0px;
-        border-radius:12px;
- *    ">
-        <h3>💧 Agua</h3>
-  *     <strong>${percentages.agua}%<*strong>
-        <p>Armonizador</p>*      </div>
+    agua: {
+      id: "agua",
+      name: "Agua",
+      icon: "💧",
+      color: "#2563eb",
 
-      <div style="
- *      background:rgba(230,57,70,0.*5);
-        padding:20px;
-        *order-radius:12px;
-      ">
-      * <h3>🔥 Fuego</h3>
-        <strong*${percentages.fuego}%</strong>
-   *    <p>Impulsor</p>
-      </div>
+      description:
+        "Empatía, escucha, cooperación y comprensión emocional.",
 
-*     <div style="
-        backgrou*d:rgba(0,150,199,0.15);
-        pa*ding:20px;
-        border-radius:1*px;
-      ">
-        <h3>🌪 Aire</*3>
-        <strong>${percentages.a*re}%</strong>
-        <p>Inspirado*</p>
-      </div>
+      strengths: [
+        "Empatía",
+        "Escucha activa",
+        "Apoyo",
+        "Cooperación",
+        "Confianza"
+      ],
 
-    </div>
+      risks: [
+        "Evitar conflictos",
+        "Dependencia de aprobación",
+        "Exceso de sensibilidad"
+      ]
+    },
 
-   *<div style="
-      margin-top:25px*
-      text-align:center;
-      pa*ding:20px;
-      border-radius:12px;
-      border:2px solid ${COLORS[dominant]};
-    ">
+    aire: {
+      id: "aire",
+      name: "Aire",
+      icon: "🌬",
+      color: "#f59e0b",
 
-      <h3>
-        Estilo predominante
-      </h3>
+      description:
+        "Creatividad, comunicación, innovación y adaptabilidad.",
 
-      <p style="
-        font-size:24px;
-        font-weight:bold;
-        color:${COLORS[dominant]};
-      ">
+      strengths: [
+        "Creatividad",
+        "Persuasión",
+        "Flexibilidad",
+        "Entusiasmo",
+        "Visión"
+      ],
 
-        ${dominant.toUpperCase()}
+      risks: [
+        "Dispersión",
+        "Falta de seguimiento",
+        "Improvisación excesiva"
+      ]
+    }
 
-      </p>
-
-    </div>
-
-  `;
-}
-
-/**
- * Calcula cuadrante principal
- */
-export function getQuadrant(
-  profile
-) {
-
-  const percentages =
-    profile.percentages;
-
-  const dominant =
-    Object.entries(
-      percentages
-    )
-    .sort(
-      (a,b) => b[1]-a[1]
-    )[0][0];
-
-  return dominant;
-}
-
-/**
- * Devuelve texto explicativo
- */
-export function getMapDescription(
-  profile
-) {
-
-  const quadrant =
-    getQuadrant(profile);
-
-  const descriptions = {
-
-    tierra:
-      "Predominio del análisis, la planificación y la precisión.",
-
-    fuego:
-      "Predominio de la acción, el liderazgo y la orientación al resultado.",
-
-    aire:
-      "Predominio de la creatividad, la innovación y la comunicación.",
-
-    agua:
-      "Predominio de la empatía, la cooperación y la escucha."
   };
 
-  return descriptions[
-    quadrant
-  ];
+  static get(style) {
+    return this.styles[style];
+  }
+
+  static getAll() {
+    return Object.values(
+      this.styles
+    );
+  }
+
+  static getColor(style) {
+    return this.styles[style]?.color
+      || "#64748b";
+  }
+
+  static getName(style) {
+    return this.styles[style]?.name
+      || style;
+  }
+
+  static getIcon(style) {
+    return this.styles[style]?.icon
+      || "⭕";
+  }
+
+  static getDescription(style) {
+    return this.styles[style]
+      ?.description || "";
+  }
+
+  static getStrengths(style) {
+    return this.styles[style]
+      ?.strengths || [];
+  }
+
+  static getRisks(style) {
+    return this.styles[style]
+      ?.risks || [];
+  }
+
+  static getStyleLabel(style) {
+
+    const styleData =
+      this.get(style);
+
+    if (!styleData) {
+      return style;
+    }
+
+    return `${styleData.icon} ${styleData.name}`;
+  }
+
+  static getStylePair(
+    primary,
+    secondary
+  ) {
+
+    return {
+      primary:
+        this.get(primary),
+
+      secondary:
+        this.get(secondary),
+
+      title:
+        `${this.getStyleLabel(primary)} + ${this.getStyleLabel(secondary)}`
+    };
+  }
 }
