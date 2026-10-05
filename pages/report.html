@@ -3,123 +3,325 @@
 
 <head>
 
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
-<title>
-Informe de Perfil
-</title>
+  <title>
+    Informe de Perfil Relacional
+  </title>
 
-<link
-  rel="stylesheet"
-  href="../styles/main.css">
+  ../styles/main.css
 
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <header class="report-header">
+    <header class="report-header">
 
-    <hal
-    </h1>
+      <h1>
+        Informe de Perfil Relacional
+      </h1>
 
-    <p id="userName">
-      Participante
-    </p>
+      <p id="userName">
+        Participante
+      </p>
 
-  </header>
+    </header>
 
-  <section class="card">
+    <section class="card">
 
-    <h2>
-      Resumen Ejecutivo
-    </h2>
+      <h2>
+        Resumen Ejecutivo
+      </h2>
 
-    <h3 id="profileTitle">
-    </h3>
+      <h3 id="profileTitle">
+      </h3>
 
-    <p id="profileSummary">
-    </p>
+      <p id="profileSummary">
+      </p>
 
-  </section>
+    </section>
 
-  <section class="card">
+    <section class="card">
 
-    <h2>
-      Resultado del Perfil
-    </h2>
+      <h2>
+        Resultado del Perfil
+      </h2>
 
-    <div class="profile-grid">
+      <div class="profile-grid">
 
-      <div>
+        <div>
 
-        <strong>
-          Tipo de perfil
-        </strong>
+          <strong>
+            Tipo de perfil
+          </strong>
 
-        <p id="profileType">
-        </p>
+          <p id="profileType">
+          </p>
+
+        </div>
+
+        <div>
+
+          <strong>
+            Estilos dominantes
+          </strong>
+
+          <p id="dominantStyles">
+          </p>
+
+        </div>
+
+        <div>
+
+          <strong>
+            Estilo menos utilizado
+          </strong>
+
+          <p id="weakestStyle">
+          </p>
+
+        </div>
+
+        <div>
+
+          <strong>
+            Intensidad
+          </strong>
+
+          <p id="intensity">
+          </p>
+
+        </div>
 
       </div>
 
-      <div>
+    </section>
 
-        <strong>
-          Estilos dominantes
-        </strong>
+    <section class="card">
 
-        <p id="dominantStyles">
-        </p>
+      <h2>
+        Distribución de estilos
+      </h2>
 
-      </div>
-
-      <div>
-
-        <strong>
-          Estilo menos utilizado
-        </strong>
-
-        <p id="weakestStyle">
-        </p>
+      <div id="percentages">
 
       </div>
 
-      <div>
+    </section>
 
-        <strong>
-          Intensidad
-        </strong>
+    <section class="card">
 
-        <p id="intensity">
-        </p>
+      <h2>
+        Fortalezas principales
+      </h2>
 
-      </div>
+      <ul id="strengths">
 
-    </div>
+      </ul>
 
-  </section>
+    </section>
 
-  <section class="card">
+    <section class="card">
 
-    <h2>
-      Porcentajes
-    </h2>
+      <h2>
+        Riesgos potenciales
+      </h2>
 
-    <div id="percentages">
+      <ul id="risks">
 
-    </div>
+      </ul>
 
-  </section>
+    </section>
 
-  <section class="card">
+    <section class="card action-panel">
 
-    <h2>
-      Fortalezas
-    </h2>
+      <button id="backBtn">
 
-    <ul id="
+        Volver al cuestionario
+
+      </button>
+
+    </section>
+
+  </div>
+
+  <script type="module">
+
+    import {
+      evaluateProfile
+    }
+    from "../services/scoringEngine.js";
+
+    import {
+      renderPercentages
+    }
+    from "../ui/charts.js";
+
+    const answers =
+      JSON.parse(
+        localStorage.getItem(
+          "answers"
+        ) || "{}"
+      );
+
+    const userData =
+      JSON.parse(
+        localStorage.getItem(
+          "userData"
+        ) || "{}"
+      );
+
+    if (
+      Object.keys(
+        answers
+      ).length === 0
+    ) {
+
+      alert(
+        "No existen respuestas guardadas."
+      );
+
+      location.href =
+        "./questionnaire.html";
+    }
+
+    const result =
+      evaluateProfile(
+        userData,
+        answers
+      );
+
+    renderReport(
+      result
+    );
+
+    function renderReport(
+      result
+    ) {
+
+      document
+        .getElementById(
+          "userName"
+        )
+        .textContent =
+          result.user.name;
+
+      document
+        .getElementById(
+          "profileTitle"
+        )
+        .textContent =
+          result.summary.title;
+
+      document
+        .getElementById(
+          "profileSummary"
+        )
+        .textContent =
+          result.summary.summary;
+
+      document
+        .getElementById(
+          "profileType"
+        )
+        .textContent =
+          result.profile.profileType;
+
+      document
+        .getElementById(
+          "dominantStyles"
+        )
+        .textContent =
+          result.profile
+          .dominantStyles
+          .join(" · ");
+
+      document
+        .getElementById(
+          "weakestStyle"
+        )
+        .textContent =
+          result.profile
+          .weakestStyle;
+
+      document
+        .getElementById(
+          "intensity"
+        )
+        .textContent =
+          result.profile
+          .intensity;
+
+      renderPercentages(
+        "percentages",
+        result.profile
+          .percentages
+      );
+
+      renderList(
+        "strengths",
+        result.strengths
+      );
+
+      renderList(
+        "risks",
+        result.risks
+      );
+
+    }
+
+    function renderList(
+      elementId,
+      items
+    ) {
+
+      const ul =
+        document.getElementById(
+          elementId
+        );
+
+      ul.innerHTML = "";
+
+      items.forEach(item => {
+
+        const li =
+          document.createElement(
+            "li"
+          );
+
+        li.textContent =
+          item;
+
+        ul.appendChild(
+          li
+        );
+
+      });
+
+    }
+
+    document
+      .getElementById(
+        "backBtn"
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          location.href =
+            "./questionnaire.html";
+
+        }
+      );
+
+  </script>
+
+</body>
+
+</html>
