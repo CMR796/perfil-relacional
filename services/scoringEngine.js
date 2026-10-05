@@ -11,7 +11,7 @@ from "./scoring.js";
 import {
   generateProfile
 }
-from "./profileGenerator.js";
+from "./profileEngine.js";
 
 import {
   getStyleName,
