@@ -13,77 +13,102 @@ import {
 }
 from "./profileGenerator.js";
 
-/**
- * Motor principal del test.
- */
-export class ScoringEngin* {
+import {
+  getStyleName,
+  getStyleColor,
+  getStyleIcon
+}
+from "../data/styles.js";
+
+export class ScoringEngine {
 
   evaluate(
     userData,
-    *nswers
+    answers
   ) {
 
-    const scoringRes*lt =
+    const scoringResult =
       scoreProfile(
-        a*swers,
+        answers,
         QUESTIONS
       );
-*    const profileInfo =
-      gene*ateProfile(
+
+    const profileInfo =
+      generateProfile(
         scoringResult
-*     );
+      );
+
+    const dominantStyle =
+      scoringResult
+        .dominantStyles[0];
 
     return {
 
-      gener*tedAt:
-        new Date().toISOStr*ng(),
+      generatedAt:
+        new Date()
+        .toISOString(),
 
       user: {
 
-        name*
+        name:
           userData.name || "",
 
- *      email:
-          userData.em*il || ""
+        email:
+          userData.email || ""
 
       },
 
-      profile:*{
+      profile: {
 
         profileType:
-          *coringResult.profileType,
+          scoringResult.profileType,
 
-       *dominantStyles:
-          scoringR*sult.dominantStyles,
+        dominantStyles:
+          scoringResult.dominantStyles,
 
-        weak*stStyle:
-          scoringResult.w*akestStyle,
+        weakestStyle:
+          scoringResult.weakestStyle,
 
         intensity:
-  *       scoringResult.intensity,
+          scoringResult.intensity,
 
- *      coordinates:
-          scori*gResult.coordinates,
+        coordinates:
+          scoringResult.coordinates,
 
-        rank*ng:
-          scoringResult.rankin*,
+        ranking:
+          scoringResult.ranking,
 
         percentages:
-          *coringResult.percentages,
+          scoringResult.percentages,
 
-       *rawScores:
-          scoringResult*rawScores
+        rawScores:
+          scoringResult.rawScores,
+
+        dominantStyleName:
+          getStyleName(
+            dominantStyle
+          ),
+
+        dominantStyleColor:
+          getStyleColor(
+            dominantStyle
+          ),
+
+        dominantStyleIcon:
+          getStyleIcon(
+            dominantStyle
+          )
 
       },
 
-      summary*
+      summary:
         profileInfo.summary,
 
-   *  strengths:
-        profileInfo.s*rengths,
+      strengths:
+        profileInfo.strengths,
 
       risks:
-        pro*ileInfo.risks
+        profileInfo.risks
 
     };
 
@@ -91,19 +116,20 @@ export class ScoringEngin* {
 
 }
 
-/*** * Helper rápido
+/**
+ * Evaluación rápida
  */
-export functi*n evaluateProfile(
+export function evaluateProfile(
   userData,
-  a*swers
+  answers
 ) {
 
   const engine =
-    ne* ScoringEngine();
+    new ScoringEngine();
 
-  return engine*evaluate(
+  return engine.evaluate(
     userData,
-    answer*
+    answers
   );
 
 }
