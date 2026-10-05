@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Test de estilos relacionales</title>
+<style>
+:root{--bg:#fafaf7;--fg:#2b2a28;--mu:#6b6a66;--card:#fff;--bd:#e3e1db;--ac:#d9531e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1f1e1c;--fg:#eeece6;--mu:#a09e97;--card:#2a2926;--bd:#403e3a;--ac:#ff7a45}}
+:root[data-theme="dark"]{--bg:#1f1e1c;--fg:#eeece6;--mu:#a09e97;--card:#2a2926;--bd:#403e3a;--ac:#ff7a45}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.6rem;margin:.2em 0}h2{font-size:1.1rem;color:var(--ac);letter-spacing:.06em;text-transform:uppercase;margin:1.6em 0 .5em}
+.mu{color:var(--mu);font-size:.92rem}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin:12px 0}
+label.f{display:block;margin:8px 0}input[type=text],input[type=number]{width:100%;box-sizing:border-box;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--fg);font:inherit}
+.q b{display:block;margin-bottom:6px}.o{display:flex;gap:8px;align-items:flex-start;padding:7px 8px;border-radius:8px;cursor:pointer}.o:hover{background:var(--bg)}
+button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:11px 18px;font:inherit;cursor:pointer;margin:6px 8px 6px 0}button.s{background:none;color:var(--ac);border:1px solid var(--ac)}
+.bar{display:flex;align-items:center;gap:8px;margin:5px 0}.bar i{display:block;height:20px;border-radius:4px;background:var(--ac)}.bar span:first-child{width:64px}
+ul{margin:.3em 0;padding-left:1.2em}.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0 20px}
+#err{color:#c0392b}.hide{display:none}
+.cover{min-height:60vh;display:flex;flex-direction:column;justify-content:center}.cover h1{font-size:2.2rem;letter-spacing:.12em;text-transform:uppercase}.cover h2{font-size:1.5rem;text-transform:none;letter-spacing:0;margin:.2em 0}.cover .mu{letter-spacing:.2em;text-transform:uppercase}.o2{display:grid;grid-template-columns:1fr 46px 46px;gap:6px;align-items:center;padding:6px 4px;border-top:1px dashed var(--bd)}.o2 span{font-size:.95rem}.hd span{font-size:.8rem;color:var(--mu);text-align:center}.o2 label{text-align:center;padding:4px;cursor:pointer}.o2 input{width:20px;height:20px}.tb{border-collapse:collapse;width:100%;font-size:.9rem}.tb td,.tb th{padding:5px 8px;border-bottom:1px solid var(--bd);text-align:left}</style></head><body><main>
+<div id="menu"><h1>Estilos relacionales</h1><p class="mu">Elige qué quieres hacer.</p>
+<div class="card"><b>Hacer el test de estilos</b><p class="mu">34 preguntas, unos 8 minutos. Genera tu informe personal en PDF.</p><button onclick="view('intro')">Hacer el test</button></div>
+<div class="card"><b>Comparar a dos personas</b><p class="mu">Introduce los cuatro porcentajes de cada persona y obtén un informe de comunicación entre ambas en PDF.</p><button onclick="view('pair')">Comparar</button></div></div>
+<div id="pair" class="hide"></div><div id="pdone" class="hide"></div>
+<div id="intro" class="hide">
+<button class="s" onclick="view('menu')">← Menú</button><h1>Test de estilos relacionales</h1>
+<p class="mu">Cuestionario de autoconocimiento sobre tu manera de relacionarte con los demás. Tarda unos 8 minutos.</p>
+<div class="card">
+<label class="f">Nombre y apellidos<input type="text" id="nm" autocomplete="name"></label>
+<p class="mu">En cada pregunta marca la opción que MÁS te describe y la que MENOS, según cómo eres habitualmente y no cómo te gustaría ser. Son 34 preguntas, unos 8 minutos.</p>
+</div>
+<div id="qs"></div>
+<p id="err"></p>
+<button id="go">Ver mi informe</button>
+</div>
+<div id="rep" class="hide"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const K=['T','F','A','W'];
+const S={
+T:{n:'Tierra',t:'Lógico, ordenado, analítico y prudente',d:'Se relaciona de forma formal y discreta, prefiere datos y comunicación escrita y se mueve por hacer las cosas bien hechas.',
+v:['Aportas juicio crítico y objetividad','Previenes problemas y evalúas riesgos','Reflexionas antes de hablar','Concretas y aportas claridad con intervenciones precisas'],
+w:['Pasar por alto lo emocional por centrarte en la tarea','Parecer frío, distante o excesivamente formal','Ser duro con quien no capta tu visión','Costarte confiar en que otros harán bien el trabajo'],
+c:['Prepara el contacto con antelación y por escrito','Habla despacio y con datos objetivos','Sé riguroso y respeta sus rutinas','Mide la cercanía física y la expresividad']},
+F:{n:'Fuego',t:'Rápido, ingenioso, práctico y firme',d:'Inicia las relaciones de forma directa y enérgica, con mensajes cortos; se centra en soluciones y resultados rápidos.',
+v:['Actúas con energía para resolver situaciones','Asumes la dirección con rapidez','Dices las cosas claras y sin rodeos','Impulsas iniciativas y retos con valentía'],
+w:['Herir a otros por priorizar los resultados','Costarte escuchar y ser poco empático','Ser brusco, retador o impaciente','Presionar en exceso para lograr tus propósitos'],
+c:['Sé directo y ve al grano','Agiliza tu discurso y propón soluciones','Sé transparente y firme en tu postura','No te tomes su franqueza como algo personal']},
+A:{n:'Aire',t:'Social, innovador, entusiasta y dinámico',d:'Tiende a iniciar relaciones cercanas, incluso con desconocidos, prefiere interactuar en persona y le mueve co-crear.',
+v:['Ves posibilidades en las personas y las situaciones','Das apoyo y reconocimiento con rapidez','Aportas creatividad e ilusión a los grupos','Improvisas y encuentras soluciones fuera de lo convencional'],
+w:['Distraerte y perder el foco','Hablar demasiado o agotar con tu intensidad','Descuidar detalles, procesos y constancia','Ser muy sensible a la crítica'],
+c:['Reconoce sus ideas y su creatividad','Deja explorar antes de concretar','Acércate con entusiasmo y apertura','Evita rutinas y exceso de detalle']},
+W:{n:'Agua',t:'Cercano, cuidadoso, leal y considerado',d:'Espera a que otros inicien el acercamiento, busca un clima armónico, procura comprender antes de opinar y le mueve colaborar.',
+v:['Buscas el bienestar y el entendimiento de las personas','Captas con facilidad las necesidades emocionales','Eres flexible, tenaz y llevas las tareas hasta el final','Valoras las relaciones profundas y duraderas'],
+w:['Evitar conflictos y decisiones que afecten a personas','Costarte sostener tu punto de vista','Pasar inadvertido y que no se oigan tus opiniones','Tomarte los comentarios como algo personal'],
+c:['Prevé tiempo suficiente y escucha a su ritmo','Pregunta más que afirmar, sin ser excesivamente directo','No presiones para obtener respuestas al momento','Aprecia su aportación y pide su opinión']}};
+// Orden de opciones por pregunta: T, F, A, W
+const Q=[
+['Al conocer a alguien nuevo…','Me presento con educación y discreción, observando antes de abrirme.','Voy al grano y me intereso por lo que podemos hacer juntos.','Rompo el hielo enseguida, aunque no conozca a nadie.','Espero a que el otro dé el primer paso y escucho con atención.'],
+['En una reunión de equipo suelo…','Aportar datos y señalar riesgos que otros no ven.','Proponer una decisión y mover al grupo a cerrarla.','Lanzar ideas y animar al grupo a imaginar opciones.','Cuidar que todos se sientan escuchados y que haya buen clima.'],
+['Ante un desacuerdo…','Llevo la conversación a hechos y argumentos lógicos.','Digo claramente lo que pienso y defiendo mi postura.','Aligero la tensión con humor y busco una salida creativa.','Prefiero evitar el choque y entender primero al otro.'],
+['Prefiero comunicarme…','Por escrito, con información detallada.','Cara a cara o por teléfono, de forma breve.','En persona, con una conversación abierta y dinámica.','En conversaciones tranquilas, de uno en uno.'],
+['Lo que más me motiva es…','Que las cosas queden bien hechas.','Que las cosas pasen y se consigan resultados.','Crear algo nuevo con otras personas.','Colaborar y que todos estemos bien.'],
+['Para tomar una decisión…','Analizo con calma antes de decidir.','Decido rápido y corrijo sobre la marcha.','Me guío por la intuición y la ilusión de las posibilidades.','Pienso ante todo en cómo afectará a las personas implicadas.'],
+['Con los plazos…','Los cumplo: planifico y prevengo problemas.','Los cumplo empujando con energía hacia el objetivo.','A veces me cuesta: me distraigo con ideas nuevas.','A veces me cuesta: dudo por no perjudicar a nadie.'],
+['Cuando alguien me critica…','Lo analizo con frialdad, aunque no lo muestre.','Respondo con firmeza y paso a la acción.','Me afecta y necesito sentir reconocimiento.','Me lo tomo a pecho y le doy muchas vueltas.'],
+['En un grupo social grande…','Me quedo algo al margen, observando.','Tomo la iniciativa y organizo.','Voy de corrillo en corrillo, disfrutando.','Busco una conversación más profunda con una o dos personas.'],
+['Si alguien me cuenta un problema personal…','Le ayudo a analizarlo y planteo soluciones lógicas.','Le propongo pasos concretos para resolverlo ya.','Le animo y le hago ver lo positivo.','Escucho, acompaño y capto cómo se siente.'],
+['Mi manera de hablar es…','Medida, precisa y formal.','Directa, rápida y con mensajes cortos.','Expresiva, entusiasta y llena de ideas.','Suave y cuidadosa; pregunto más que afirmo.'],
+['Si alguien va más lento que yo…','Compruebo que el trabajo esté bien hecho, aunque tarde más.','Me impaciento y quiero acelerar.','Intento contagiarle mi energía.','Le doy tiempo y le acompaño.'],
+['Un buen día de trabajo es aquel en que…','Tengo tiempo para pensar y todo queda ordenado.','Cierro muchas tareas y avanzo en retos importantes.','Hablo con mucha gente y surgen ideas.','Hay buen ambiente y he ayudado a alguien.'],
+['Ante un cambio…','Pido información y evalúo los riesgos.','Me lanzo: me gustan los retos.','Me entusiasma probar algo diferente.','Necesito tiempo para asimilarlo y ver cómo afecta al equipo.'],
+['Cuando estoy saturado/a…','Me cierro y me vuelvo más distante y crítico.','Me vuelvo brusco e impaciente.','Me disperso y hablo más deprisa.','Me bloqueo, o reacciono impulsivamente si me presionan.'],
+['Los demás suelen describirme como…','Serio, riguroso y fiable.','Decidido, directo y resolutivo.','Simpático, creativo y enérgico.','Amable, empático y leal.'],
+['Cuando tengo que explicar algo…','Lo hago de forma ordenada, con precisión y ejemplos concretos.','Lo resumo en pocas frases y voy a lo esencial.','Lo cuento con entusiasmo, con ejemplos e imágenes.','Me aseguro de que el otro lo entiende y le pregunto cómo lo ve.'],
+['En una conversación importante…','Prefiero llegar preparado/a y con los argumentos pensados.','Me gusta resolverlo ahí mismo y salir con una decisión.','Dejo que fluya y que surjan ideas sobre la marcha.','Cuido el tono y busco que el otro se sienta cómodo.'],
+['Si tengo que dar una mala noticia…','La doy con claridad, hechos y formalidad.','La digo directamente, sin rodeos.','Intento suavizarla destacando lo positivo.','Me cuesta; busco el momento y las palabras más delicadas.'],
+['Mi espacio de trabajo ideal es…','Tranquilo, ordenado y con pocas interrupciones.','Activo, con retos y capacidad de decidir.','Animado, con gente alrededor y libertad para crear.','Cálido, con buen ambiente y relaciones cercanas.'],
+['Cuando trabajo en equipo…','Me ocupo de que haya un plan claro y que se cumpla con calidad.','Tiendo a coger el liderazgo y a marcar el ritmo.','Aporto energía y ayudo a que el grupo se implique.','Hago de puente y cuido que el grupo se mantenga unido.'],
+['Lo que más me molesta en los demás es…','La improvisación y la falta de rigor.','La lentitud y las vueltas innecesarias.','La rutina y la falta de entusiasmo.','La brusquedad y la falta de consideración.'],
+['Si me hacen una propuesta inesperada…','Pido tiempo y detalles antes de responder.','Respondo enseguida: sí o no.','Me engancho a la idea y empiezo a imaginar variantes.','Me cuesta decir que no si creo que puede decepcionar.'],
+['Después de un día intenso, para recargarme…','Necesito silencio y tiempo para mí.','Hago algo activo que me desconecte.','Quedo con gente y me divierto.','Disfruto de un rato tranquilo con personas cercanas.'],
+['Cuando hay mucha presión de tiempo…','Reviso y reordeno prioridades antes de actuar, para no equivocarme.','Acelero, tomo el mando y me centro en sacarlo adelante.','Me lleno de energía, pido ayuda y busco una solución ingeniosa.','Intento mantener la calma del grupo, aunque me sature por dentro.'],
+['Si algo sale mal y me hacen responsable…','Analizo qué falló y preparo una explicación basada en hechos.','Asumo el problema y propongo cómo arreglarlo ya.','Intento quitar tensión y reconducir con una nueva idea.','Me afecta mucho y le doy vueltas a lo que pensarán de mí.'],
+['Cuando me llevan la contraria con dureza…','Me pongo más serio y me cierro, o respondo con ironía.','Me enfrento y defiendo mi posición con más fuerza.','Hablo más, intento convencer y me cuesta escuchar.','Me bloqueo o callo, y luego reacciono si me siguen presionando.'],
+['Cuando tengo demasiadas cosas a la vez…','Me aíslo para concentrarme y pido que no me interrumpan.','Delego o descarto lo que no es esencial y avanzo.','Salto de una tarea a otra y me cuesta terminarlas.','Intento atenderlo todo y a todos, y acabo agotado/a.'],
+['Si el ambiente del equipo se vuelve tenso…','Me retiro un poco y observo, o me ciño a lo racional.','Digo lo que pasa sin rodeos para resolverlo cuanto antes.','Intento animar el ambiente con humor y energía.','Me preocupo mucho y trato de mediar entre las personas.'],
+['Con mis amigos y mi familia, suelo ser quien…','Aporta cordura y piensa las cosas con calma.','Propone planes y organiza lo que hay que hacer.','Anima al grupo y propone cosas divertidas y nuevas.','Escucha, cuida a los demás y mantiene unido al grupo.'],
+['Cuando quiero expresar afecto…','Lo hago con hechos y detalles prácticos, más que con palabras.','Lo demuestro actuando y resolviendo cosas por la persona.','Lo expreso con efusividad, palabras y gestos.','Lo demuestro estando presente, escuchando y cuidando.'],
+['Si un amigo se enfada conmigo…','Espero a que se calme y luego lo hablamos con argumentos.','Voy directo a hablar de ello para aclararlo cuanto antes.','Intento arreglarlo enseguida con cercanía y buen humor.','Me cuesta; le doy vueltas y prefiero no forzar la conversación.'],
+['En mi tiempo libre prefiero…','Actividades tranquilas, con pocas personas y bien planificadas.','Actividades con reto, competición o logro.','Planes sociales y cosas nuevas e improvisadas.','Estar con personas cercanas en un ambiente tranquilo.'],
+['Cuando conozco a alguien a través de un amigo…','Soy educado, pero me abro despacio.','Soy directo y enseguida veo qué podemos hacer juntos.','Conecto rápido y me intereso por todo de esa persona.','Escucho más que hablo y tardo en abrirme, pero con interés.']];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const CTX=Q.map((_,i)=>([7,14].includes(i)||(i>=24&&i<29))?'p':([8,9,23].includes(i)||i>=29)?'c':'g');
+$('qs').innerHTML=Q.map((q,i)=>{const o=[0,1,2,3].sort(()=>Math.random()-.5);
+return `<div class="card q"><b>${i+1}. ${esc(q[0])}</b><div class="o2 hd"><span></span><span>Más</span><span>Menos</span></div>`+o.map(k=>`<div class="o2"><span>${esc(q[k+1])}</span><label><input type="radio" name="m${i}" value="${K[k]}"></label><label><input type="radio" name="l${i}" value="${K[k]}"></label></div>`).join('')+'</div>'}).join('');
+let last=null;
+$('go').onclick=()=>{
+ const nm=$('nm').value.trim();
+ if(!nm){$('err').textContent='Indica tu nombre.';return}
+ const ms=[],ls=[];
+ for(let i=0;i<Q.length;i++){const m=document.querySelector(`input[name=m${i}]:checked`),l=document.querySelector(`input[name=l${i}]:checked`);
+  if(!m||!l){$('err').textContent='Falta la pregunta '+(i+1)+': marca una opción en "Más" y otra en "Menos".';return}
+  if(m.value===l.value){$('err').textContent='En la pregunta '+(i+1)+' las opciones "Más" y "Menos" deben ser distintas.';return}
+  ms.push(m.value);ls.push(l.value)}
+ $('err').textContent='';
+ const all=Q.map((_,i)=>i),N=Q.length;
+ const calc=ids=>{const r={T:0,F:0,A:0,W:0};ids.forEach(i=>{r[ms[i]]++;r[ls[i]]--});return r};
+ const raw=calc(all),c={},p={};K.forEach(k=>{c[k]=(raw[k]+N)/4;p[k]=Math.round(c[k]/N*100)});
+ const pc={};['g','p','c'].forEach(x=>{const ids=all.filter(i=>CTX[i]==x),n=ids.length,rw=calc(ids);pc[x]={};K.forEach(k=>pc[x][k]=Math.round((rw[k]+n)/(4*n)*100))});
+ const ord=K.slice().sort((a,b)=>c[b]-c[a]||K.indexOf(a)-K.indexOf(b));
+ const pref=ord.filter(k=>p[k]>=25);if(!pref.length)pref.push(ord[0]);
+ const tipo=pref.length==1?'PURO':pref.length==2?'DUAL':'MÚLTIPLE';
+ const etq=tipo+' '+pref.map(k=>S[k].n).join(' | ');
+ last={nm,c,p,pc,ord,pref,tipo,etq};show();
+};
+const CV='.cover{min-height:80vh;display:flex;flex-direction:column;justify-content:center;page-break-after:always}.cover h1{font-size:2.4rem;letter-spacing:.12em;text-transform:uppercase}.cover h2{font-size:1.6rem;text-transform:none;letter-spacing:0;margin:.2em 0}.cover .mu{letter-spacing:.2em;text-transform:uppercase}';
+function body(r){
+ const {nm,c,p,ord,pref,tipo,etq}=r,n=Q.length;
+ const C={T:'#8a5a3b',F:'#e8762b',A:'#4a90c2',W:'#2a9d9d'};
+ const fecha=new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+ const expl={PURO:'Un estilo destaca sobre los demás: tu entorno probablemente te reconoce en él. Cuidado con sobreutilizarlo si supera con mucho a los otros.',
+ DUAL:'Dos estilos conviven en ti. Conviene ser consciente de cuál estás usando en cada contexto o ante cada persona.',
+ MÚLTIPLE:'Tres o cuatro estilos con presencia similar: sueles adaptarte con facilidad, aunque tu entorno puede tener dificultad para identificar tu estilo.'}[tipo];
+ const x=Math.max(-1,Math.min(1,1.6*(c.F+c.A-c.T-c.W)/n)),y=Math.max(-1,Math.min(1,1.6*(c.T+c.F-c.A-c.W)/n));
+ const q=(px,py,w,h,k)=>`<rect x="${px}" y="${py}" width="${w}" height="${h}" fill="${C[k]}" opacity=".22"/>`;
+ const map=`<svg viewBox="0 0 360 290" width="100%" style="max-width:420px;display:block;margin:auto" font-family="sans-serif" font-size="10" fill="currentColor">${q(70,25,110,120,'T')}${q(180,25,110,120,'F')}${q(70,145,110,120,'W')}${q(180,145,110,120,'A')}
+<line x1="70" y1="145" x2="290" y2="145" stroke="currentColor" opacity=".6"/><line x1="180" y1="25" x2="180" y2="265" stroke="currentColor" opacity=".6"/>
+<text x="180" y="14" text-anchor="middle">RACIONAL</text><text x="180" y="281" text-anchor="middle">EMOCIONAL</text><text x="2" y="148">REFLEXIVO</text><text x="358" y="148" text-anchor="end">ACTIVO</text>
+<text x="76" y="40" font-weight="bold">TIERRA</text><text x="284" y="40" text-anchor="end" font-weight="bold">FUEGO</text><text x="76" y="258" font-weight="bold">AGUA</text><text x="284" y="258" text-anchor="end" font-weight="bold">AIRE</text>
+<circle cx="${180+x*110}" cy="${145-y*120}" r="7" fill="currentColor" stroke="#fff" stroke-width="2"/></svg>`;
+ const bars=`<svg viewBox="0 0 320 210" width="100%" style="max-width:420px;display:block;margin:auto" font-family="sans-serif" font-size="11" fill="currentColor">`+
+ ['T','F','A','W'].map((k,i)=>{const h=p[k]*2.4,bx=20+i*74;return `<rect x="${bx}" y="${175-h}" width="60" height="${h}" rx="3" fill="${C[k]}"/><text x="${bx+30}" y="${170-h}" text-anchor="middle" font-weight="bold">${p[k]}%</text><text x="${bx+30}" y="194" text-anchor="middle" font-size="10">${S[k].n.toUpperCase()}</text>`}).join('')+
+ `<line x1="10" y1="${175-60}" x2="310" y2="${175-60}" stroke="currentColor" stroke-dasharray="4 3" opacity=".6"/><text x="310" y="${175-64}" text-anchor="end" font-size="9" opacity=".7">línea de preferencia (25%)</text><line x1="10" y1="175" x2="310" y2="175" stroke="currentColor"/></svg>`;
+ let h=`<section class="cover"><p class="mu">Modelo de estilos relacionales</p><h1>Informe personal</h1><p class="mu">Informe elaborado para</p><h2 style="color:var(--ac,#d9531e)">${esc(nm)}</h2><p>${fecha}</p></section>
+<h2>Tu estilo es ${esc(etq)}</h2><p>${expl}</p><h2>Tu posición en el mapa de estilos</h2>${map}<h2>Tus porcentajes</h2>${bars}
+<p class="mu">Los estilos por encima de la línea (25 % o más) son tus estilos de preferencia. Con menos del 15 % en un estilo, usarlo suele cansar más.</p>`;
+ ord.forEach(k=>{const s=S[k];
+  h+=`<h2>${s.n} · ${p[k]}%${pref.includes(k)?' ★':''}</h2><p><b>${s.t}.</b> ${s.d}</p><div class="cols"><div><b>Puntos fuertes</b><ul>${s.v.map(x=>`<li>${x}</li>`).join('')}</ul></div><div><b>Puntos a vigilar</b><ul>${s.w.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`});
+ const X=xtra(r);
+ h+=`<h2>Cómo cambia tu estilo según el contexto</h2><p class="mu">Porcentajes calculados con las preguntas de cada contexto; son orientativos porque cada contexto tiene pocas preguntas.</p><div style="overflow-x:auto"><table class="tb"><tr><th></th>${K.map(k=>`<th>${S[k].n}</th>`).join('')}<th>Predomina</th></tr>${X.rows.map(w=>`<tr><td>${w.n}</td>${K.map(k=>`<td>${w.p[k]}%</td>`).join('')}<td><b>${S[w.d].n}</b></td></tr>`).join('')}</table></div><h2>Bajo presión</h2><p>${X.stress}</p><h2>Cómo pueden verte los demás</h2>${X.seen.map(q=>`<p><b>Con tu estilo ${S[q.k].n}</b></p><ul>${q.items.map(x=>`<li>${x}</li>`).join('')}</ul>`).join('')}<h2>Tu plan de tres acciones</h2><ol>${X.acts.map(a=>`<li>${a}</li>`).join('')}</ol>`;
+ h+='<h2>Pistas para relacionarte con cada estilo</h2><div class="cols">';
+ K.forEach(k=>{h+=`<div><b>Con ${S[k].n}</b><ul>${S[k].c.map(x=>`<li>${x}</li>`).join('')}</ul></div>`});
+ return h+'</div>';
+}
+function mkpdf(J,r){
+ const {nm,c,p,ord,pref,etq}=r,n=c.T+c.F+c.A+c.W;
+ const d=new J({unit:'mm',format:'a4'}),W=210,H=297,M=18,CW=W-2*M;
+ const OR='#d9531e',DK='#2b2a28',GR='#777777';
+ const C={T:'#8a5a3b',F:'#e8762b',A:'#4a90c2',W:'#2a9d9d'},L={T:'#ece0d7',F:'#fbe3d2',A:'#dbe9f4',W:'#d4ecec'};
+ const hx=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));
+ let y=M+8;
+ const T=(s,x,yy,sz,st,hc,o)=>{d.setFont('helvetica',st||'normal');d.setFontSize(sz);d.setTextColor(...hx(hc||DK));d.text(s,x,yy,o)};
+ const np=()=>{d.addPage();y=M+8};
+ const need=h=>{if(y+h>H-M)np()};
+ const P=(s,sz,st,hc)=>{d.setFont('helvetica',st||'normal');d.setFontSize(sz||10);d.setTextColor(...hx(hc||DK));
+  d.splitTextToSize(s,CW).forEach(l=>{need(sz*.5);d.text(l,M,y);y+=(sz||10)*.5});y+=2};
+ const Hd=s=>{need(16);y+=5;T(s.toUpperCase(),M,y,11,'bold',OR);y+=7};
+ const bl=a=>{a.forEach(t=>{const ls=d.splitTextToSize(t,CW-5);need(ls.length*4.7+2);d.setFont('helvetica','normal');d.setFontSize(9.5);d.setTextColor(...hx(DK));d.text('-',M,y);ls.forEach((l,i)=>d.text(l,M+4,y+i*4.7));y+=ls.length*4.7+1.5});y+=1.5};
+ const lst=(items,w)=>items.map(x=>d.splitTextToSize(x,w-4));
+ const hgt=ls=>ls.reduce((a,l)=>a+l.length*4.7+1.2,0);
+ const draw=(ls,x,yy)=>{d.setFont('helvetica','normal');d.setFontSize(9.5);d.setTextColor(...hx(DK));
+  ls.forEach(l=>{d.text('-',x,yy);l.forEach((t,i)=>d.text(t,x+4,yy+i*4.7));yy+=l.length*4.7+1.2})};
+ const cols=(a,b)=>{const w=(CW-8)/2;d.setFontSize(9.5);const la=lst(a.i,w),lb=lst(b.i,w),h=Math.max(hgt(la),hgt(lb))+7;
+  need(h);T(a.t,M,y,10,'bold');T(b.t,M+w+8,y,10,'bold');draw(la,M,y+6);draw(lb,M+w+8,y+6);y+=h+3};
+ // Carátula
+ d.setFillColor(...hx(OR));d.rect(0,0,W,6,'F');
+ T('MODELO DE ESTILOS RELACIONALES',M,110,11,'normal',GR);T('INFORME PERSONAL',M,126,30,'bold');
+ T('Informe elaborado para',M,150,12,'normal',GR);
+ d.setFontSize(22);d.setFont('helvetica','normal');d.setTextColor(...hx(OR));d.text(d.splitTextToSize(nm,CW),M,162);
+ T(new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}),M,182,12);
+ np();
+ P('TU ESTILO ES '+etq.toUpperCase(),14,'bold');
+ P(({1:'Un estilo destaca sobre los demás: tu entorno probablemente te reconoce en él. Cuidado con sobreutilizarlo si supera con mucho a los otros.',2:'Dos estilos conviven en ti. Conviene ser consciente de cuál estás usando en cada contexto o ante cada persona.'}[pref.length])||'Tres o cuatro estilos con presencia similar: sueles adaptarte con facilidad, aunque tu entorno puede tener dificultad para identificar tu estilo.',10);
+ // Mapa
+ Hd('Tu posición en el mapa de estilos');need(100);
+ const cx=W/2,tp=y+8,qw=55,qh=42,cl=(v)=>Math.max(-1,Math.min(1,1.6*v/n));
+ [['T',cx-qw,tp],['F',cx,tp],['W',cx-qw,tp+qh],['A',cx,tp+qh]].forEach(([k,x,yy])=>{d.setFillColor(...hx(L[k]));d.rect(x,yy,qw,qh,'F')});
+ d.setDrawColor(90);d.setLineWidth(.3);d.line(cx-qw,tp+qh,cx+qw,tp+qh);d.line(cx,tp,cx,tp+2*qh);
+ T('RACIONAL',cx,tp-2,8,'normal',GR,{align:'center'});T('EMOCIONAL',cx,tp+2*qh+5,8,'normal',GR,{align:'center'});
+ T('REFLEXIVO',cx-qw-2,tp+qh+1,8,'normal',GR,{align:'right'});T('ACTIVO',cx+qw+2,tp+qh+1,8,'normal',GR);
+ T('TIERRA',cx-qw+2,tp+5,8,'bold',C.T);T('FUEGO',cx+qw-2,tp+5,8,'bold',C.F,{align:'right'});
+ T('AGUA',cx-qw+2,tp+2*qh-3,8,'bold',C.W);T('AIRE',cx+qw-2,tp+2*qh-3,8,'bold',C.A,{align:'right'});
+ const X=cl(c.F+c.A-c.T-c.W),Y=cl(c.T+c.F-c.A-c.W);
+ d.setFillColor(0);d.setDrawColor(255);d.setLineWidth(.7);d.circle(cx+X*qw,tp+qh-Y*qh,2,'FD');
+ y=tp+2*qh+12;
+ // Barras
+ Hd('Tus porcentajes');need(70);
+ const base=y+50,sc=.75,bw=22,g=8,x0=(W-(4*bw+3*g))/2;
+ ['T','F','A','W'].forEach((k,i)=>{const x=x0+i*(bw+g),h=p[k]*sc;d.setFillColor(...hx(C[k]));d.rect(x,base-h,bw,h,'F');
+  T(p[k]+'%',x+bw/2,base-h-2,9,'bold',DK,{align:'center'});T(S[k].n.toUpperCase(),x+bw/2,base+5,8,'normal',GR,{align:'center'})});
+ d.setDrawColor(90);d.setLineWidth(.3);d.line(x0-6,base,x0+4*bw+3*g+6,base);
+ d.setLineDashPattern([1.5,1.5],0);d.line(x0-6,base-25*sc,x0+4*bw+3*g+6,base-25*sc);d.setLineDashPattern([],0);
+ T('25 %',x0+4*bw+3*g+8,base-25*sc+1,7,'normal',GR);
+ y=base+12;
+ P('Los estilos por encima de la línea (25 % o más) son tus estilos de preferencia. Con menos del 15 % en un estilo, usarlo suele cansar más.',9,'normal',GR);
+ // Estilos
+ ord.forEach(k=>{const s=S[k];need(58);Hd(s.n+' '+p[k]+'%'+(pref.includes(k)?'  (estilo de preferencia)':''));
+  P(s.t+'.',10,'bold');P(s.d,10);cols({t:'Puntos fuertes',i:s.v},{t:'Puntos a vigilar',i:s.w})});
+ const XT=xtra(r);
+ Hd('Cómo cambia tu estilo según el contexto');P('Porcentajes calculados con las preguntas de cada contexto; son orientativos porque cada contexto tiene pocas preguntas.',9,'normal',GR);
+ XT.rows.forEach(w=>{P(w.n+': '+K.map(k=>S[k].n+' '+w.p[k]+'%').join(',  ')+'.  Predomina '+S[w.d].n+'.',9.5)});
+ Hd('Bajo presión');P(XT.stress,10);
+ Hd('Cómo pueden verte los demás');XT.seen.forEach(q=>{P('Con tu estilo '+S[q.k].n,10,'bold');bl(q.items)});
+ Hd('Tu plan de tres acciones');bl(XT.acts.map((a,i)=>(i+1)+'. '+a));
+ Hd('Pistas para relacionarte con cada estilo');
+ cols({t:'Con Tierra',i:S.T.c},{t:'Con Fuego',i:S.F.c});cols({t:'Con Aire',i:S.A.c},{t:'Con Agua',i:S.W.c});
+ const N=d.getNumberOfPages();
+ for(let i=2;i<=N;i++){d.setPage(i);T('INFORME PERSONAL  |  '+nm.toUpperCase(),M,10,8,'normal',OR);T(String(i),W-M,H-8,8,'normal',GR,{align:'right'})}
+ return d;
+}
+function show(){
+ $('intro').classList.add('hide');const R=$('rep');R.classList.remove('hide');
+ R.innerHTML=body(last)+'<div class="card"><button id="dl">Descargar informe en PDF</button><button class="s" onclick="view(\'menu\')">Volver al menú</button></div>';
+ scrollTo(0,0);
+ $('dl').onclick=()=>dlpdf($('dl'),'Descargar informe en PDF',()=>mkpdf(window.jspdf.jsPDF,last),'informe-estilo-'+last.nm.replace(/\W+/g,'_')+'.pdf');
+}
+const NK=(a,b)=>[a,b].sort((x,y)=>'TFAW'.indexOf(x)-'TFAW'.indexOf(y)).join('');
+const PM={
+TT:['Compartís rigor, orden y respeto por los tiempos de reflexión; la comunicación es clara y formal.','Podéis quedaros en el análisis sin decidir o resultar fríos el uno para el otro; conviene cuidar lo relacional.'],
+TF:['Ambos sois concretos y orientados a la tarea, y valoráis la claridad.','Tierra necesita tiempo y datos y Fuego quiere rapidez: la prisa puede leerse como presión y la prudencia como lentitud.'],
+TA:['Tierra aporta estructura y Aire ideas nuevas: juntos podéis crear algo sólido y original.','Aire puede percibir a Tierra como rígido, y Tierra a Aire como disperso o poco riguroso.'],
+TW:['Ambos sois reflexivos y respetuosos con los ritmos, y os dais espacio para pensar.','Podéis acumular silencios y evitar temas difíciles; a los dos os cuesta dar el primer paso.'],
+FF:['Os entendéis rápido: sois directos y estáis orientados a resultados.','Puede haber pulso por el liderazgo y poca escucha mutua; la franqueza puede escalar a confrontación.'],
+FA:['Compartís energía y ganas de moveros: hay dinamismo y entusiasmo.','Fuego puede ver a Aire como poco enfocado, y Aire a Fuego como brusco o poco sensible.'],
+FW:['Agua aporta escucha y cuidado de la relación, y Fuego decisión e impulso.','Fuego puede atropellar sin darse cuenta, y Agua puede callarse o bloquearse en vez de expresar su desacuerdo.'],
+AA:['Hay mucha energía, creatividad y buen ambiente, y las ideas fluyen.','Podéis dispersaros, hablar a la vez y dejar tareas y detalles sin cerrar.'],
+AW:['Aire ofrece entusiasmo y Agua cuidado: ambos valoráis lo personal y el buen clima.','El ritmo de Aire puede agotar a Agua, y la cautela de Agua puede frenar a Aire.'],
+WW:['Hay confianza, empatía y un clima de colaboración muy cuidado.','Podéis evitar el conflicto y las decisiones difíciles hasta que se acumulen.']};
+const AG={
+TT:['Fijad plazos para decidir, de modo que el análisis no retrase las decisiones.','Reservad un momento para lo relacional: preguntaos cómo estáis, no solo cómo va la tarea.'],
+TF:['Acordad un plazo de respuesta razonable: lo bastante ágil para Fuego y con información suficiente para Tierra.','Enviad por escrito los puntos clave antes de decidir.'],
+TA:['Alternad una fase de ideas libres con otra de concreción, con fechas y responsables.','Dejad por escrito los acuerdos después de las conversaciones.'],
+TW:['Acordad una forma de plantear los temas difíciles, por escrito o en una conversación tranquila.','Revisad de vez en cuando qué cosas no os habéis dicho.'],
+FF:['Repartid ámbitos de liderazgo para no competir por el mando.','Pactad una señal para parar y escuchar cuando la conversación se acalore.'],
+FA:['Cerrad cada reunión con tres decisiones concretas, con responsables y fechas.','Dad espacio a las ideas de Aire antes de pasar a la acción.'],
+FW:['La persona de Fuego se compromete a preguntar y esperar la opinión de Agua antes de decidir.','La persona de Agua se compromete a decir lo que piensa en el momento, aunque sea con suavidad.'],
+AA:['Nombrad a alguien que cierre tareas y haga el seguimiento.','Definid prioridades por escrito para no dispersaros.'],
+AW:['Pactad pausas y ritmos: tiempo de interacción y tiempo de calma.','Preguntad al otro cómo le ha sentado una propuesta antes de seguir adelante.'],
+WW:['Acordad que los desacuerdos se hablan pronto, de forma amable pero explícita.','Establecer quién decide en cada tema, para que las decisiones no se eviten.']};
+const SIT=[['Reuniones y toma de decisiones',
+['Envía la agenda y los datos antes, y da tiempo para analizar antes de decidir.','Ve al grano, plantea opciones y propón una decisión concreta.','Deja espacio a las ideas y después concreta con fechas y responsables.','Pide su opinión directamente y espera su respuesta sin presionar.']],
+['Dar feedback o una mala noticia',
+['Usa hechos y ejemplos concretos, con tono respetuoso y, si es posible, por escrito.','Sé directo y breve, y plantea qué se puede cambiar.','Empieza reconociendo sus aportaciones y plantea el cambio con entusiasmo.','Cuida el momento y el tono, hazlo en privado y subraya lo que valoras.']],
+['Pedir algo o delegar',
+['Explica con precisión qué, cómo y para cuándo, y confía en su criterio.','Indica el resultado esperado y déjale libertad para lograrlo.','Plantea el reto con ilusión y acuerda hitos para mantener el foco.','Pregunta si puede asumirlo y ofrece apoyo; no des por hecho que dirá que no.']],
+['Plazos y seguimiento',
+['Acordad fechas realistas y respeta su planificación.','Marca hitos cortos y revisa resultados más que procesos.','Usa recordatorios amables y revisiones frecuentes y breves.','Pregunta sin presionar cómo va y ofrece ayuda antes de que se bloquee.']],
+['Desacuerdos o momentos de tensión',
+['Vuelve a los hechos, evita el sarcasmo y da tiempo para pensar.','Habla claro y sin rodeos, y no te tomes su franqueza como algo personal.','Mantén la calma y el buen tono, y reconduce hacia lo concreto.','Baja el ritmo, escucha y retoma la conversación cuando ambos estéis tranquilos.']]];
+const prefs=o=>{const s=K.slice().sort((a,b)=>o.p[b]-o.p[a]||K.indexOf(a)-K.indexOf(b));const pf=s.filter(k=>o.p[k]>=25);return pf.length?pf:[s[0]]};
+const lab=o=>{const f=prefs(o);return(f.length==1?'PURO':f.length==2?'DUAL':'MÚLTIPLE')+' '+f.map(k=>S[k].n).join(' | ')};
+function mkpair(J,A,B){
+ const d=new J({unit:'mm',format:'a4'}),W=210,H=297,M=18,CW=W-2*M;
+ const OR='#d9531e',DK='#2b2a28',GR='#777777';
+ const C={T:'#8a5a3b',F:'#e8762b',A:'#4a90c2',W:'#2a9d9d'},L={T:'#ece0d7',F:'#fbe3d2',A:'#dbe9f4',W:'#d4ecec'};
+ const hx=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));
+ let y=M+8;
+ const T=(s,x,yy,sz,st,hc,o)=>{d.setFont('helvetica',st||'normal');d.setFontSize(sz);d.setTextColor(...hx(hc||DK));d.text(s,x,yy,o)};
+ const np=()=>{d.addPage();y=M+8};
+ const need=h=>{if(y+h>H-M)np()};
+ const P=(s,sz,st,hc)=>{d.setFont('helvetica',st||'normal');d.setFontSize(sz||10);d.setTextColor(...hx(hc||DK));
+  d.splitTextToSize(s,CW).forEach(l=>{need(sz*.5);d.text(l,M,y);y+=(sz||10)*.5});y+=2};
+ const Hd=s=>{need(30);y+=5;T(s.toUpperCase(),M,y,11,'bold',OR);y+=7};
+ const bl=a=>{a.forEach(t=>{const ls=d.splitTextToSize(t,CW-5);need(ls.length*4.7+2);d.setFont('helvetica','normal');d.setFontSize(9.5);d.setTextColor(...hx(DK));d.text('-',M,y);ls.forEach((l,i)=>d.text(l,M+4,y+i*4.7));y+=ls.length*4.7+1.5});y+=1.5};
+ const fa=prefs(A),fb=prefs(B),pa=fa.slice(0,2),pb=fb.slice(0,2);
+ // Carátula
+ d.setFillColor(...hx(OR));d.rect(0,0,W,6,'F');
+ T('MODELO DE ESTILOS RELACIONALES',M,110,11,'normal',GR);T('INFORME DE COMUNICACIÓN',M,126,26,'bold');
+ T('Informe elaborado para',M,150,12,'normal',GR);
+ d.setFontSize(22);d.setFont('helvetica','normal');d.setTextColor(...hx(OR));d.text(d.splitTextToSize(A.nm+' y '+B.nm,CW),M,162);
+ T(new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}),M,184,12);
+ np();
+ Hd('Vuestros perfiles');
+ [A,B].forEach(o=>{P(o.nm+': '+lab(o),11,'bold');P(['T','F','A','W'].map(k=>S[k].n+' '+o.p[k]+'%').join(',  '),9.5,'normal',GR)});
+ P('A continuación veréis dónde estáis cada uno en el mapa de estilos y cómo se comparan vuestros porcentajes.',10);
+ need(100);
+ const cx=W/2,tp=y+8,qw=55,qh=42,cl=v=>Math.max(-1,Math.min(1,1.6*v/100));
+ [['T',cx-qw,tp],['F',cx,tp],['W',cx-qw,tp+qh],['A',cx,tp+qh]].forEach(([k,x,yy])=>{d.setFillColor(...hx(L[k]));d.rect(x,yy,qw,qh,'F')});
+ d.setDrawColor(90);d.setLineWidth(.3);d.line(cx-qw,tp+qh,cx+qw,tp+qh);d.line(cx,tp,cx,tp+2*qh);
+ T('RACIONAL',cx,tp-2,8,'normal',GR,{align:'center'});T('EMOCIONAL',cx,tp+2*qh+5,8,'normal',GR,{align:'center'});
+ T('REFLEXIVO',cx-qw-2,tp+qh+1,8,'normal',GR,{align:'right'});T('ACTIVO',cx+qw+2,tp+qh+1,8,'normal',GR);
+ T('TIERRA',cx-qw+2,tp+5,8,'bold',C.T);T('FUEGO',cx+qw-2,tp+5,8,'bold',C.F,{align:'right'});
+ T('AGUA',cx-qw+2,tp+2*qh-3,8,'bold',C.W);T('AIRE',cx+qw-2,tp+2*qh-3,8,'bold',C.A,{align:'right'});
+ [[A,'#000000'],[B,OR]].forEach(([o,fc])=>{const X=cl(o.p.F+o.p.A-o.p.T-o.p.W),Y=cl(o.p.T+o.p.F-o.p.A-o.p.W);
+  d.setFillColor(...hx(fc));d.setDrawColor(255);d.setLineWidth(.7);d.circle(cx+X*qw,tp+qh-Y*qh,2.2,'FD')});
+ y=tp+2*qh+10;
+ d.setFillColor(0);d.circle(M+2,y-1,1.6,'F');T(A.nm,M+6,y,9);d.setFillColor(...hx(OR));d.circle(M+60,y-1,1.6,'F');T(B.nm,M+64,y,9);
+ y+=8;need(75);
+ const base=y+52,sc=.75,x0=(W-120)/2;
+ K.forEach((k,i)=>{const x=x0+i*32,h1=A.p[k]*sc,h2=B.p[k]*sc;
+  d.setFillColor(...hx(C[k]));d.rect(x,base-h1,11,h1,'F');d.setFillColor(...hx(L[k]));d.setDrawColor(...hx(C[k]));d.setLineWidth(.4);d.rect(x+12,base-h2,11,h2,'FD');
+  T(A.p[k]+'%',x+5.5,base-h1-1.5,7,'bold',DK,{align:'center'});T(B.p[k]+'%',x+17.5,base-h2-1.5,7,'normal',DK,{align:'center'});
+  T(S[k].n.toUpperCase(),x+11.5,base+5,8,'normal',GR,{align:'center'})});
+ d.setDrawColor(90);d.setLineWidth(.3);d.line(x0-6,base,x0+126,base);d.setLineDashPattern([1.5,1.5],0);d.line(x0-6,base-25*sc,x0+126,base-25*sc);d.setLineDashPattern([],0);
+ y=base+10;P('En cada estilo, la barra rellena es la de '+A.nm+' y la barra clara es la de '+B.nm+'. La línea discontinua marca el 25 %.',9,'normal',GR);
+ // Conexión y fricción
+ Hd('Dónde conectáis y dónde puede haber fricción');
+ const ks=[];pa.forEach(a=>pb.forEach(b=>{const k=NK(a,b);if(!ks.some(z=>z[0]==k))ks.push([k,a,b])}));
+ ks.forEach(([k,a,b])=>{P('El estilo '+S[a].n+' de '+A.nm+' con el estilo '+S[b].n+' de '+B.nm,10,'bold');bl(['Dónde conectáis: '+PM[k][0],'Posible fricción: '+PM[k][1]])});
+ // Cada uno con el otro
+ const one=(X,Y,px,py)=>{Hd(X.nm+': cómo relacionarte con '+Y.nm);P(Y.nm+' tiene un perfil '+lab(Y)+'. Estas son las claves para que la comunicación fluya:',10);
+  py.forEach(b=>{P('Con el estilo '+S[b].n+' de '+Y.nm,10,'bold');bl(S[b].c)});
+  P('Tendencias de tu estilo '+S[px[0]].n+' que conviene cuidar con '+Y.nm,10,'bold');bl(S[px[0]].w.slice(0,3))};
+ one(A,B,pa,pb);one(B,A,pb,pa);
+ // Situaciones
+ Hd('Situaciones habituales');P('Cómo actuar con el otro en las situaciones más frecuentes del trabajo en equipo, teniendo en cuenta su estilo principal.',10);
+ SIT.forEach(([t,v])=>{need(30);P(t,10,'bold');bl([A.nm+' con '+B.nm+': '+v[K.indexOf(pb[0])],B.nm+' con '+A.nm+': '+v[K.indexOf(pa[0])]])});
+ // Acuerdos
+ Hd('Acuerdos de funcionamiento propuestos');P('Propuestas para hablar entre los dos y adaptarlas a vuestra forma de trabajar:',10);
+ const k2=[NK(pa[0],pb[0])];const k3=NK(pa[1]||pa[0],pb[1]||pb[0]);if(k3!=k2[0])k2.push(k3);
+ bl(k2.flatMap(k=>AG[k]).concat(['Revisad cada cierto tiempo cómo os está funcionando la comunicación y qué ajustar.','Pedíos feedback de forma regular, con respeto y con ejemplos concretos.']));
+ const N=d.getNumberOfPages();
+ for(let i=2;i<=N;i++){d.setPage(i);T('INFORME DE COMUNICACIÓN  |  '+A.nm.toUpperCase()+' Y '+B.nm.toUpperCase(),M,10,8,'normal',OR);T(String(i),W-M,H-8,8,'normal',GR,{align:'right'})}
+ return d;
+}
+const V=['menu','intro','rep','pair','pdone'];
+const view=id=>{V.forEach(v=>$(v).classList.toggle('hide',v!==id));scrollTo(0,0)};
+async function dlpdf(b,label,fn,name){try{
+ b.disabled=true;b.textContent='Generando PDF…';fn().save(name)}
+ catch(e){alert('No se pudo generar el PDF.')}
+ b.disabled=false;b.textContent=label}
+$('pair').innerHTML='<button class="s" onclick="view(\'menu\')">← Menú</button><h1>Comparar a dos personas</h1><p class="mu">Introduce el nombre y los cuatro porcentajes de cada persona (deben sumar 100). Valen los de este test o los de un informe Bridge.</p>'+
+ [0,1].map(i=>`<div class="card"><b>Persona ${i+1}</b><label class="f">Nombre<input type="text" id="pn${i}"></label><div class="cols">`+K.map(k=>`<label class="f">${S[k].n} (%)<input type="number" min="0" max="100" id="pv${i}${k}"></label>`).join('')+'</div></div>').join('')+
+ '<p id="perr" style="color:#c0392b"></p><button id="pgo">Generar informe</button>';
+$('pgo').onclick=()=>{const ps=[];
+ for(let i=0;i<2;i++){const nm=$('pn'+i).value.trim(),p={};let t=0;
+  if(!nm){$('perr').textContent='Falta el nombre de la persona '+(i+1)+'.';return}
+  for(const k of K){const v=parseFloat($('pv'+i+k).value);if(!(v>=0&&v<=100)){$('perr').textContent='Revisa los porcentajes de '+nm+'.';return}p[k]=Math.round(v);t+=p[k]}
+  if(t<97||t>103){$('perr').textContent='Los porcentajes de '+nm+' suman '+t+' y deberían sumar 100.';return}
+  ps.push({nm,p})}
+ $('perr').textContent='';const[A,B]=ps;
+ $('pdone').innerHTML=`${pairHTML(A,B)}<div class="card"><button id="pdl">Descargar informe en PDF</button><button class="s" onclick="view('menu')">Volver al menú</button></div>`;
+ view('pdone');$('pdl').onclick=()=>dlpdf($('pdl'),'Descargar informe en PDF',()=>mkpair(window.jspdf.jsPDF,A,B),'informe-comunicacion-'+(A.nm+'_'+B.nm).replace(/\W+/g,'_')+'.pdf')};
+const STR={
+T:'Bajo estrés tiendes a cerrarte, volverte más distante y más crítico. Te ayuda pedir tiempo, ordenar por escrito las prioridades y avisar a los demás de que necesitas pensar.',
+F:'Bajo estrés aumentas el ritmo y la presión, y puedes volverte brusco. Te ayuda parar antes de responder, preguntar y escuchar antes de decidir.',
+A:'Bajo estrés te dispersas, hablas más rápido y cuesta cerrar las cosas. Te ayuda elegir una sola prioridad y apoyarte en una lista corta de tareas.',
+W:'Bajo estrés te bloqueas o reaccionas con impulsividad si te presionan. Te ayuda pedir tiempo, poner por escrito lo que piensas y decir antes lo que te incomoda.'};
+const VP={
+T:['con criterio y realista','lento o rígido','distante o negativo','distante o poco involucrado'],
+F:['precipitado','decidido y resolutivo','mandón','brusco o prepotente'],
+A:['poco serio o disperso','sin foco','flexible y estimulante','atropellado o agotador'],
+W:['blando o demasiado sensible','indeciso o frágil','lento o apagado','considerado y empático']};
+function xtra(r){const {p,ord,pc}=r;const dm=o=>K.slice().sort((a,b)=>o[b]-o[a]||K.indexOf(a)-K.indexOf(b))[0];
+ const rows=[['En el trabajo y en general',pc.g],['Bajo presión',pc.p],['Con personas cercanas',pc.c]].map(([n,q])=>({n,p:q,d:dm(q)}));
+ const sd=rows[1].d,m=ord[0],wk=ord[3],o={T:'A',A:'T',F:'W',W:'F'}[m];
+ const stress=(sd===m?'Bajo presión mantienes tu estilo principal, '+S[m].n+', y tiende a intensificarse. ':'Bajo presión pasas de tu estilo principal, '+S[m].n+', al estilo '+S[sd].n+'. ')+STR[sd];
+ const seen=r.pref.slice(0,2).map(k=>({k,items:K.map((j,i)=>'Una persona de estilo '+S[j].n+' puede verte como: '+VP[k][i])}));
+ const acts=['Esta semana, fíjate en cuándo aparece esta tendencia de tu estilo '+S[m].n+': '+S[m].w[0].charAt(0).toLowerCase()+S[m].w[0].slice(1)+'.',
+ 'Ejercita un poco tu estilo menos presente, '+S[wk].n+' ('+p[wk]+'%), en una situación de poco riesgo. Pista: '+S[wk].v[0]+'.',
+ 'Elige a una persona de estilo '+S[o].n+', el más distinto al tuyo, y aplica esta pista: '+S[o].c[0].charAt(0).toLowerCase()+S[o].c[0].slice(1)+'.'];
+ return {rows,stress,seen,acts}}
+function pairHTML(A,B){
+ const fa=prefs(A).slice(0,2),fb=prefs(B).slice(0,2),CC={T:'#8a5a3b',F:'#e8762b',A:'#4a90c2',W:'#2a9d9d'};
+ const cl=v=>Math.max(-1,Math.min(1,1.6*v/100)),pt=o=>[180+cl(o.p.F+o.p.A-o.p.T-o.p.W)*110,145-cl(o.p.T+o.p.F-o.p.A-o.p.W)*120];
+ const q=(x,y,k)=>`<rect x="${x}" y="${y}" width="110" height="120" fill="${CC[k]}" opacity=".22"/>`,[ax,ay]=pt(A),[bx,by]=pt(B);
+ const map=`<svg viewBox="0 0 360 290" width="100%" style="max-width:420px;display:block;margin:auto" font-family="sans-serif" font-size="10" fill="currentColor">${q(70,25,'T')}${q(180,25,'F')}${q(70,145,'W')}${q(180,145,'A')}<line x1="70" y1="145" x2="290" y2="145" stroke="currentColor" opacity=".6"/><line x1="180" y1="25" x2="180" y2="265" stroke="currentColor" opacity=".6"/><text x="180" y="14" text-anchor="middle">RACIONAL</text><text x="180" y="281" text-anchor="middle">EMOCIONAL</text><text x="2" y="148">REFLEXIVO</text><text x="358" y="148" text-anchor="end">ACTIVO</text><text x="76" y="40" font-weight="bold">TIERRA</text><text x="284" y="40" text-anchor="end" font-weight="bold">FUEGO</text><text x="76" y="258" font-weight="bold">AGUA</text><text x="284" y="258" text-anchor="end" font-weight="bold">AIRE</text><circle cx="${ax}" cy="${ay}" r="7" fill="#000" stroke="#fff" stroke-width="2"/><circle cx="${bx}" cy="${by}" r="7" fill="#d9531e" stroke="#fff" stroke-width="2"/></svg>`;
+ const bars=`<svg viewBox="0 0 320 210" width="100%" style="max-width:420px;display:block;margin:auto" font-family="sans-serif" font-size="10" fill="currentColor">`+K.map((k,i)=>{const x=20+i*74,h1=A.p[k]*2.4,h2=B.p[k]*2.4;return `<rect x="${x}" y="${175-h1}" width="28" height="${h1}" fill="${CC[k]}"/><rect x="${x+30}" y="${175-h2}" width="28" height="${h2}" fill="${CC[k]}" fill-opacity=".3" stroke="${CC[k]}"/><text x="${x+14}" y="${171-h1}" text-anchor="middle" font-weight="bold">${A.p[k]}%</text><text x="${x+44}" y="${171-h2}" text-anchor="middle">${B.p[k]}%</text><text x="${x+29}" y="194" text-anchor="middle" font-size="9">${S[k].n.toUpperCase()}</text>`}).join('')+`<line x1="10" y1="115" x2="310" y2="115" stroke="currentColor" stroke-dasharray="4 3" opacity=".6"/><line x1="10" y1="175" x2="310" y2="175" stroke="currentColor"/></svg>`;
+ const ul=a=>'<ul>'+a.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>';
+ const fecha=new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+ let h=`<section class="cover"><p class="mu">Modelo de estilos relacionales</p><h1>Informe de comunicación</h1><p class="mu">Informe elaborado para</p><h2 style="color:var(--ac,#d9531e)">${esc(A.nm)} y ${esc(B.nm)}</h2><p>${fecha}</p></section><h2>Vuestros perfiles</h2><p><b>${esc(A.nm)}</b>: ${esc(lab(A))}<br><b>${esc(B.nm)}</b>: ${esc(lab(B))}</p>${map}<p class="mu" style="text-align:center"><b style="color:#000;filter:drop-shadow(0 0 1px #fff)">●</b> ${esc(A.nm)} &nbsp; <b style="color:#d9531e">●</b> ${esc(B.nm)}</p>${bars}<p class="mu">En cada estilo, la barra rellena es la de ${esc(A.nm)} y la clara la de ${esc(B.nm)}. La línea discontinua marca el 25 %.</p><h2>Dónde conectáis y dónde puede haber fricción</h2>`;
+ const ks=[];fa.forEach(a=>fb.forEach(b=>{const k=NK(a,b);if(!ks.some(z=>z[0]==k))ks.push([k,a,b])}));
+ ks.forEach(([k,a,b])=>{h+=`<p><b>El estilo ${S[a].n} de ${esc(A.nm)} con el estilo ${S[b].n} de ${esc(B.nm)}</b></p>`+ul(['Dónde conectáis: '+PM[k][0],'Posible fricción: '+PM[k][1]])});
+ const one=(X,Y,px,py)=>{h+=`<h2>${esc(X.nm)}: cómo relacionarte con ${esc(Y.nm)}</h2><p>${esc(Y.nm)} tiene un perfil ${esc(lab(Y))}. Estas son las claves para que la comunicación fluya:</p>`;
+  py.forEach(b=>{h+=`<p><b>Con el estilo ${S[b].n} de ${esc(Y.nm)}</b></p>`+ul(S[b].c)});h+=`<p><b>Tendencias de tu estilo ${S[px[0]].n} que conviene cuidar con ${esc(Y.nm)}</b></p>`+ul(S[px[0]].w.slice(0,3))};
+ one(A,B,fa,fb);one(B,A,fb,fa);
+ h+='<h2>Situaciones habituales</h2><p>Cómo actuar con el otro en las situaciones más frecuentes del trabajo en equipo, según su estilo principal.</p>';
+ SIT.forEach(([t,v])=>{h+=`<p><b>${t}</b></p>`+ul([A.nm+' con '+B.nm+': '+v[K.indexOf(fb[0])],B.nm+' con '+A.nm+': '+v[K.indexOf(fa[0])]])});
+ const k2=[NK(fa[0],fb[0])],k3=NK(fa[1]||fa[0],fb[1]||fb[0]);if(k3!=k2[0])k2.push(k3);
+ return h+'<h2>Acuerdos de funcionamiento propuestos</h2><p>Propuestas para hablar entre los dos y adaptarlas a vuestra forma de trabajar:</p>'+ul(k2.flatMap(k=>AG[k]).concat(['Revisad cada cierto tiempo cómo os está funcionando la comunicación y qué ajustar.','Pedíos feedback de forma regular, con respeto y con ejemplos concretos.']));
+}
+</script></main></body></html>
