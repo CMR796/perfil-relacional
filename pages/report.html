@@ -544,22 +544,18 @@ function renderChart(percentages){
 
 document
 .getElementById(
- "downloadPdfBtn"
+"downloadPdfBtn"
 )
 .addEventListener(
- "click",
- () => {
-
-   const pdf =
-   new pdfGenerator(
-     result
-   );
-
-   pdf.download();
-
- }
+"click",
+() => {
+ 
+pdfGenerator.generate(
+result
 );
-
+ 
+}
+);
 </script>
 
 </body>
